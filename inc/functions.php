@@ -24,21 +24,7 @@ require_once $df.'/helpers/URL.php';
 require_once $df.'/helpers/APITokens.php';
 // controller system v2
 require_once $df.'/pages/Login.php';
-require_once $df.'/pages/Leaderboard.php';
-require_once $df.'/pages/PasswordFinishRecovery.php';
-require_once $df.'/pages/ServerStatus.php';
-require_once $df.'/pages/UserLookup.php';
-require_once $df.'/pages/RequestRankedBeatmap.php';
-require_once $df.'/pages/MyAPIApplications.php';
-require_once $df.'/pages/EditApplication.php';
-require_once $df.'/pages/DeleteApplication.php';
-require_once $df.'/pages/Support.php';
-require_once $df.'/pages/Team.php';
-require_once $df.'/pages/IRC.php';
 require_once $df.'/pages/Beatmaps.php';
-require_once $df.'/pages/Verify.php';
-require_once $df.'/pages/Welcome.php';
-require_once $df.'/pages/Discord.php';
 $pages = [
 	new Login(),
 	new Beatmaps(),
