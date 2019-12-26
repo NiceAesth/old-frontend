@@ -80,11 +80,6 @@ $teamConfig = [
 	]
 ];
 
-// Schiavo discord bot config
-$schiavoConfig = [
-	"url" => "http://zxq.co:31155/"
-];
-
 // ip env (ip fix with caddy)
 $ipEnv = 'REMOTE_ADDR';	// HTTP_X_FORWARDED_FOR
 

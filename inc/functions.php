@@ -21,7 +21,6 @@ require_once $df.'/../vendor/autoload.php';
 require_once $df.'/helpers/PasswordHelper.php';
 require_once $df.'/helpers/UsernameHelper.php';
 require_once $df.'/helpers/URL.php';
-require_once $df.'/helpers/Schiavo.php';
 require_once $df.'/helpers/APITokens.php';
 // controller system v2
 require_once $df.'/pages/Login.php';
@@ -1710,9 +1709,6 @@ function multiaccCheckIP($ip) {
 	return $multiUserID;
 	/*$multiUsername = $GLOBALS["db"]->fetch("SELECT username FROM users WHERE id = ?", [$multiUserID]);
 
-	if ($multiUsername) {
-		@Schiavo::CM("User **" . current($multiUsername) . "** (https://ripple.moe/?u=$multiUserID) tried to create a multiaccount (**" . $_POST['u'] . "**) from IP **" . $ip . "**");
-	}
 	$GLOBALS["db"]->execute("UPDATE users SET notes=CONCAT(COALESCE(notes, ''),'\n-- Multiacc attempt (".$_POST["u"].") from IP ".$ip."') WHERE id = ?", [$multiUserID]); */
 }
 
