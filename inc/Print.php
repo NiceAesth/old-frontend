@@ -504,10 +504,6 @@ class P {
 				</tr>';
 			}
 			echo '<tr>
-			<td>2FA</td>
-			<td>' . (has2FA($userData["id"]) ? "Yes" : "No") . '</td>
-			</tr>';
-			echo '<tr>
 			<td>Username color<br><i class="no-mobile">(HTML or HEX color)</i></td>
 			<td><p class="text-center"><input type="text" name="c" class="form-control" value="'.$userStatsData['user_color'].'" '.$readonly[1].'></td>
 			</tr>';
@@ -640,9 +636,6 @@ class P {
 								echo '	<a href="index.php?u='.$_GET['id'].'" class="btn btn-primary">View profile</a>';
 								if (hasPrivilege(Privileges::AdminManageUsers)) {
 									echo '	<a href="index.php?p=132&uid=' . $_GET['id'] . '" class="btn btn-danger">View anticheat reports</a>';
-									if (has2FA($_GET["id"])) {
-										echo '	<a onclick="sure(\'submit.php?action=remove2FA&id='.$_GET['id'].'&csrf=' . csrfToken() . '\')" class="btn btn-danger">Remove 2FA</a>';
-									}
 								}
 							echo '</li>
 						</ul>';

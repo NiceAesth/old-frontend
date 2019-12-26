@@ -16,8 +16,6 @@ if ($c->Check()) {
 		// /shrugs
 	}
 }
-// Redirect to 2FA block page if needed
-redirect2FA();
 
 // CONTROLLER SYSTEM v2
 $model = 'old';

@@ -6,9 +6,6 @@ require_once './inc/functions.php';
 try {
 	startSessionIfNotStarted();
 
-	// Make sure we are not locked due to 2FA
-	redirect2FA();
-
 	// Find what the user wants to do (compatible with both GET/POST forms)
 	if (isset($_POST['action']) && !empty($_POST['action'])) {
 		$action = $_POST['action'];
@@ -204,10 +201,6 @@ try {
 		case 'bulkBan':
 			sessionCheckAdmin(Privileges::AdminBanUsers);
 			D::BulkBan();
-		break;
-		case 'remove2FA':
-			sessionCheckAdmin(Privileges::AdminManageUsers);
-			D::Remove2FA();
 		break;
 		default:
 			throw new Exception('Invalid action value');

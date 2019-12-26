@@ -39,11 +39,9 @@ require_once $df.'/pages/Beatmaps.php';
 require_once $df.'/pages/Verify.php';
 require_once $df.'/pages/Welcome.php';
 require_once $df.'/pages/Discord.php';
-require_once $df.'/pages/BlockTotp2fa.php';
 $pages = [
 	new Login(),
 	new Beatmaps(),
-	new BlockTotpTwoFa()
 ];
 // Set timezone to UTC
 date_default_timezone_set('Europe/Rome');
@@ -1619,36 +1617,6 @@ function readableRank($rank) {
 	}
 }
 
-function redirect2FA() {
-	// Check 2FA only if we are logged in
-	if (!checkLoggedIn())
-		return;
-
-	// Get 2FA type
-	$type = get2FAType($_SESSION["userid"]);
-	if ($type == 0) {
-		// No 2FA, don't redirect
-		return;
-	}
-	// TOTP
-	$ip = getIp();
-	if ($GLOBALS["db"]->fetch("SELECT * FROM ip_user WHERE userid = ? AND ip = ?", [$_SESSION["userid"], $ip])) {
-		// trusted ip
-		return;
-	} else {
-		// new ip
-		// force 2fa alert page
-		// Don't redirect to 2FA page if we are on submit.php with resend2FA, 2fa or logout action
-		if ($_SERVER['PHP_SELF'] == "/submit.php" && @$_GET["action"] == "logout")
-			return;
-		if (!isset($_GET["p"]) || $_GET["p"] != 42)
-			redirect("index.php?p=42");
-	}
-}
-
-
-
-
 /*
    RIP Documentation and comments from now on.
    Those functions are the last ones that we've added to old-frontend
@@ -1661,13 +1629,6 @@ function redirect2FA() {
    I'd just like to interject for a moment. You do not just 'fuck' PHP, you 'fuck' PHP with a CACTUS!
    -- Howl
 */
-
-
-
-function get2FAType($userID) {
-	$result = $GLOBALS["db"]->fetch("SELECT IFNULL((SELECT 2 FROM 2fa_totp WHERE userid = ? AND enabled = 1 LIMIT 1), 0) AS x", [$userID]);
-	return $result["x"];
-}
 
 function getUserPrivileges($userID) {
 	global $cachedPrivileges;
@@ -1975,10 +1936,6 @@ function updateMainMenuIconBancho() {
 function testMainMenuIconBancho($userID, $mainMenuIconID) {
 	redisConnect();
 	$GLOBALS["redis"]->publish("peppy:set_main_menu_icon", json_encode(["userID" => $userID, "mainMenuIconID" => $mainMenuIconID]));
-}
-
-function has2FA($userID) {
-	return $GLOBALS["db"]->fetch("SELECT userid FROM 2fa_totp WHERE userid = ? AND `enabled` = 1 LIMIT 1", [$userID]) !== false;
 }
 
 function getDiscordData($userID) {
