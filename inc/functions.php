@@ -111,7 +111,6 @@ function setTitle($p) {
 			6 =>   'Edit user settings',
 			7 =>   'Change password',
 			8 =>   'Edit userpage',
-			17 =>  'Changelog',
 			18 =>  'Recover your password',
 			21 =>  'About',
 			23 =>  'Rules',
@@ -1089,127 +1088,7 @@ function getLevel($s) {
 		}
 	}
 }
-/**************************
- ** CHANGELOG FUNCTIONS  **
- **************************/
-function getChangelog() {
-	sessionCheck();
-	echo '<p align="center"><h1><i class="fa fa-code"></i>	Changelog</h1>';
-	echo 'Welcome to the changelog page.<br>As soon as a change is made, it will be posted here.<br>Hover a change to know when it was done.<br><br>';
-	if (!file_exists(dirname(__FILE__).'/../../ci-system/ci-system/changelog.txt')) {
-		echo '<b>Unfortunately, no changelog for this Ripple instance is available. Slap the sysadmin and tell him to configure it.</b>';
-	} else {
-		$_GET['page'] = (isset($_GET['page']) && $_GET['page'] > 0 ? intval($_GET['page']) : 1);
-		$data = getChangelogPage($_GET['page']);
-		if ($data == false || count($data) == 0) {
-			echo "<b>You've reached the end of the universe.</b>";
-			echo "<br><br><a href='index.php?p=17&page=".($_GET['page'] - 1)."'>&lt; Previous page</a>";
 
-			return;
-		}
-		echo "<table class='table table-striped table-hover'><thead><th style='width:10%'></th><th style='width:5%'></th><th style='width:75%'></th></thead><tbody>";
-		foreach ($data as $commit) {
-			echo sprintf("<tr class='%s'><td>%s</td><td><b>%s:</b></td><td><div title='%s'>%s</div></td></tr>", $commit['row'], $commit['labels'], $commit['username'], $commit['time'], $commit['content']);
-		}
-		echo '</tbody></table><br><br>';
-		if ($_GET['page'] != 1) {
-			echo "<a href='index.php?p=17&page=".($_GET['page'] - 1)."'>&lt; Previous page</a>";
-			echo ' | ';
-		}
-		echo "<a href='index.php?p=17&page=".($_GET['page'] + 1)."'>Next page &gt;</a>";
-	}
-}
-/*
- * getChangelogPage()
- * Gets a page from the changelog.json with some commits.
- *
- * @param (int) ($p) Page. Optional. Default is 1.
-*/
-function getChangelogPage($p = 1) {
-	global $ChangelogConfig;
-	// Retrieve data from changelog.json
-	$data = explode("\n", file_get_contents(dirname(__FILE__).'/../../ci-system/ci-system/changelog.txt'));
-	$ret = [];
-	// Check there are enough commits for the current page.
-	$initoffset = ($p - 1) * 50;
-	if (count($data) < ($initoffset)) {
-		return false;
-	}
-	// Get only the commits we're interested in.
-	$data = array_slice($data, $initoffset, 50);
-	// check whether user is admin
-	$useradmin = hasPrivilege(Privileges::AdminAccessRAP);
-	// Get each commit
-	foreach ($data as $commit) {
-		// Separate the various components of the commit
-		$commit = explode('|', $commit);
-		// Silently ignore commits that don't have enough data
-		if (count($commit) < 4) {
-			continue;
-		}
-		$valid = true;
-		$labels = '';
-		// Fix author name
-		$commit[2] = trim($commit[2]);
-		// Check forbidden commits
-		if (isset($ChangelogConfig['forbidden_commits'])) {
-			foreach ($ChangelogConfig['forbidden_commits'] as $hash) {
-				if (strpos($commit[0], strtolower($hash)) !== false) {
-					$valid = false;
-					break;
-				}
-			}
-		}
-		// Only get first line of commit
-		$message = implode('|', array_slice($commit, 3));
-		// Check forbidden words
-		if (isset($ChangelogConfig['forbidden_keywords']) && !empty($ChangelogConfig['forbidden_keywords'])) {
-			foreach ($ChangelogConfig['forbidden_keywords'] as $word) {
-				if (strpos(strtolower($message), strtolower($word)) !== false) {
-					$valid = false;
-					break;
-				}
-			}
-		}
-		// Add labels
-		if (isset($ChangelogConfig['labels'])) {
-			// Hidden label if user is an admin and commit is hidden
-			if ($useradmin && !$valid) {
-				$row = 'warning';
-				$labels .= "<span class='label label-default'>Hidden</span>	";
-			} else {
-				$row = 'default';
-			}
-			// Other labels
-			foreach ($ChangelogConfig['labels'] as $label) {
-				// Add label if needed
-				$label = explode(',', $label);
-				$keyword = $label[0];
-				$text = $label[1];
-				$color = $label[2];
-				if (strpos(strtolower($message), strtolower($keyword)) !== false) {
-					$labels .= "<span class='label label-".$color."'>".$text.'</span>	';
-				}
-				// Remove label keyword from commit
-				$message = str_ireplace($keyword, ' ', $message);
-			}
-		} else {
-			$row = 'default';
-		}
-		// If we should not output this commit, let's skip it.
-		if (!$valid && !$useradmin) {
-			continue;
-		}
-		// Change names if needed
-		if (isset($ChangelogConfig['change_name'][$commit[2]])) {
-			$commit[2] = $ChangelogConfig['change_name'][2];
-		}
-		// Build return array
-		$ret[] = ['username' => htmlspecialchars($commit[2]), 'content' => htmlspecialchars($message), 'time' => gmdate("Y-m-d\TH:i:s\Z", intval($commit[1])), 'labels' => $labels, 'row' => $row];
-	}
-
-	return $ret;
-}
 /**************************
  **   OTHER   FUNCTIONS  **
  **************************/

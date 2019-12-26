@@ -1676,19 +1676,6 @@ WHERE users.$kind = ? LIMIT 1", [$u]);
 	}
 
 	/*
-	 * ChangelogPage
-	 * Prints the Changelog page.
-	*/
-	public static function Changelogpage() {
-		// Maintenance check
-		self::MaintenanceStuff();
-		// Global alert
-		self::GlobalAlert();
-		// Changelog
-		getChangelog();
-	}
-
-	/*
 	 * ExceptionMessage
 	 * Display an error alert with a custom message.
 	 *

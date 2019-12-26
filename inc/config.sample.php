@@ -14,18 +14,6 @@ $URL = [
 	'scores' => 'http://127.0.0.1:5002'
 ];
 
-// Changelog config
-$ChangelogConfig = [
-	// If in the commit message any of these words appear, don't show the commit in the changelog.
-	'forbidden_keywords' => ['[HIDE]', '[SECRET]'],
-	// These commits will be hidden
-	'forbidden_commits' => [],
-	// Labels (keyword,label text,color)
-	'labels' => ['[FIX],fix,danger', '[WEB],web,info', '[BANCHO],bancho,warning', '[SCORES],scores,primary', '[NEW],new,success'],
-	// If you want to change names from what they appear in the git logs, you can set here a different name for you and your project contributors.
-	'change_name' => ['fuck' => 'a donkey', 'suck' => 'a duck'],
-];
-
 // WebHook configuration. Refer to the wiki for more information.
 $WebHookReport = '';
 $KeyAkerino = '';

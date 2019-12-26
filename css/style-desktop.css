@@ -347,16 +347,6 @@ hr {
     color: #df8a13;
 }
 
-.changelog-line {
-	text-align: left;
-	width: 100%;
-	padding-top: 2px;
-	padding-bottom: 2px;
-	border-bottom: 1px solid #e4e4e4;
-}
-.changelog-line:hover {
-	background: #fbfbfb;
-}
 .gaugeChartLabel {
 	font-weight: normal;
 	color: #666;
