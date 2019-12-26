@@ -14,35 +14,6 @@ $URL = [
 	'scores' => 'http://127.0.0.1:5002'
 ];
 
-// WebHook configuration. Refer to the wiki for more information.
-$WebHookReport = '';
-$KeyAkerino = '';
-
-// Server status page configuration
-$ServerStatusConfig = [
-	'service_status' => [
-		'enable' 			=> true, // Must be true if you want to enable "Service status" section
-		'bancho_url'        => 'http://127.0.0.1:5001', // Bancho URL
-		'avatars_url'       => 'http://127.0.0.1:5000', // Avatar server URL
-		'beatmap_url'       => 'http://bcache.zxq.co', 	// Beatmap mirror URL
-		'api_url'           => 'http://127.0.0.1/api', 	// Ripple API URL
-		'lets_url'          => 'http://127.0.0.1:5002', // LETS URL
-	],
-
-	'netdata' => [
-		'enable'            => true, 	// Must be true if you want to enable server stats (cpu, ram, ipv4 and so on)
-		'server_url'        => 'http://127.0.0.1:19999', // Your netdata server
-		'header_enable'     => true, 	// Show header with main server stats
-		'system_enable'     => true, 	// Show cpu/load/ram graphs
-		'network_enable'    => true, 	// Show IPv4 graphss
-		'disk_enable'       => true, 	// Show disk graphs
-		'disk_name'         => 'vda', 	// Your disk name
-		'mysql_server'      => 'srv', 	// MySQL server name inside netstat's config file
-		'mysql_enable'      => true, 	// Show mysql graphs. You must have configured netstat's mysql plugin.
-		'nginx_enable'      => true, 	// Show nginx graphs. You must have configured netstat's nginx plugin.
-	]
-];
-
 // Scores/PP config
 $ScoresConfig = [
 	"enablePP" => true,
@@ -51,18 +22,6 @@ $ScoresConfig = [
 	"api_key" => "",
 	"rankRequestsQueueSize" => 20,
 	"rankRequestsPerUser" => 2
-];
-
-// Team page config
-$teamHidden = [];
-$teamConfig = [
-	999 => [
-		"name" => "Mark Fokawo",
-		"twitter" => "fokawooooo",
-		"email" => "fo@ka.wo",
-		"role" => "Master Bot",
-		"github" => "gitfoka"
-	]
 ];
 
 // ip env (ip fix with caddy)
