@@ -14,7 +14,6 @@ class Login {
 		if (!isset($_GET['e']) && !isset($_GET['s'])) {
 			echo '<p>Please enter your credentials.</p>';
 		}
-		echo '<p><a href="index.php?p=18">Forgot your password, perhaps?</a></p>';
 		// Print login form
 		echo '<form action="submit.php" method="POST">
 		<input name="action" value="login" hidden>

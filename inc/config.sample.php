@@ -26,9 +26,6 @@ $ChangelogConfig = [
 	'change_name' => ['fuck' => 'a donkey', 'suck' => 'a duck'],
 ];
 
-// Mailgun config
-$MailgunConfig = ['domain' => '', 'key' => ''];
-
 // WebHook configuration. Refer to the wiki for more information.
 $WebHookReport = '';
 $KeyAkerino = '';

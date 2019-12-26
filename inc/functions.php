@@ -13,7 +13,6 @@ require_once $df.'/Print.php';
 require_once $df.'/RememberCookieHandler.php';
 require_once $df.'/PlayStyleEnum.php';
 require_once $df.'/resize.php';
-require_once $df.'/SimpleMailgun.php';
 require_once $df.'/PrivilegesEnum.php';
 // Composer
 require_once $df.'/../vendor/autoload.php';
@@ -1843,18 +1842,6 @@ function giveDonor($userID, $months, $add=true) {
 	else if ($months >= 4 && $months < 10) $TheMoreYouKnow = "Your donation will help to keep the beatmap mirror we set up for Ripple up for one month! Thanks a lot!";
 	else if ($months >= 1 && $months < 4) $TheMoreYouKnow =  "With your donation, we can afford to keep up the error logging server, which is a little VPS on which we host an error logging service (Sentry). Thanks a lot!";
 	
-	global $MailgunConfig;
-	$mailer = new SimpleMailgun($MailgunConfig);
-	$mailer->Send(
-		'Ripple <noreply@'.$MailgunConfig['domain'].'>', $userData['email'],
-		'Thank you for donating!',
-		sprintf(
-			"Hey %s! Thanks for donating to Ripple. It's thanks to the support of people like you that we can afford keeping the service up. Your donation has been processed, and you should now be able to get the donator role on discord, and have access to all the other perks listed on the \"Support us\" page.<br><br>%s<br><br>Your donor expires in %s months. Until then, have fun!<br>The Ripple Team",
-			$username,
-			$TheMoreYouKnow,
-			$monthsExpire
-		)
-	);
 	return $monthsExpire;
 }
 
