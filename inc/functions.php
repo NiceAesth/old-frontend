@@ -452,6 +452,7 @@ function printNavbar() {
 		// Just an easter egg that you'll probably never notice, unless you do it on purpose.
 		if (hasPrivilege(Privileges::AdminAccessRAP)) {
 			echo '<li><a href="index.php?p=100"><i class="fa fa-cog"></i>	<b>Admin Panel</b></a></li>';
+			echo '<li><a href="/phpmyadmin"><i class="fa fa-database"></i>	<b>phpMyAdmin</b></a></li>';
 		}
 	}
 	// Right elements
