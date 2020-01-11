@@ -202,6 +202,10 @@ try {
 			sessionCheckAdmin(Privileges::AdminBanUsers);
 			D::BulkBan();
 		break;
+		case 'deleteUser':
+			sessionCheckAdmin(Privileges::AdminManageServers);
+			D::DeleteUser();
+		break;
 		default:
 			throw new Exception('Invalid action value');
 	}
