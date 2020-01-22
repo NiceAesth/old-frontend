@@ -424,13 +424,13 @@ class D {
 				throw new Exception('Nice troll.');
 			}
 			// Get user id
-			$row = $GLOBALS['db']->fetch(sprintf('SELECT id FROM users WHERE %s = ? LIMIT 1', $email ? 'email' : 'username'), [$_POST['u']]);
+			$id = current($GLOBALS['db']->fetch(sprintf('SELECT id FROM users WHERE %s = ? LIMIT 1', $email ? 'email' : 'username'), [$_POST['u']]));
 			// Check if that user exists
-			if (!$row) {
+			if (!$id) {
 				throw new Exception("That user doesn't exist");
 			}
 			// Done, redirect to edit page
-			redirect('index.php?p=103&id='.current($row));
+			redirect('index.php?p=103&id='.$id);
 		}
 		catch(Exception $e) {
 			// Redirect to Exception page
@@ -1384,7 +1384,7 @@ class D {
 			} else {
 				$bsid = $GLOBALS["db"]->fetch("SELECT beatmapset_id FROM beatmaps WHERE beatmap_id = ? LIMIT 1", [$_POST["id"]]);
 				if (!$bsid) {
-					throw new Exception("Beatmap set not found in ripple's database. Please use beatmap set id or load at least one difficulty in game before trying to rank a beatmap by its id.");
+					throw new Exception("Beatmap set not found in Ainu's database. Please use beatmap set id or load at least one difficulty in game before trying to rank a beatmap by its id.");
 				}
 				$bsid = current($bsid);
 			}
@@ -1520,6 +1520,7 @@ class D {
 				$q .= " AND time <= ?";
 				array_push($qp, $endts);
 			}
+
 			$scoresToRecover = $GLOBALS["db"]->fetchAll($q, $qp);
 			foreach ($scoresToRecover as $lostScore) {
 				$restore = false;
@@ -1544,12 +1545,10 @@ class D {
 				$GLOBALS["db"]->execute("DELETE FROM scores_removed WHERE id = ? LIMIT 1", [$lostScore["id"]]);
 				echo "Restored $lostScore[id]<br>";
 			}
-			echo "<hr><span style='color: green;'>All scores restored correctly!</span>";
+
 			// redirect(index.php?p=134&id=" . $userID);
 		} catch (Exception $e) {
-			echo "<span style='color: orange'>Error while restoring scores: " . $e->getMessage() . "</span>";
-		} finally {
-			echo "<hr><i>If there was a timeout error, run the restore procedure until there are no scores to be restored</i><br><a href='index.php?p=134'>Back to RAP</a>";
+			redirect("index.php?p=134&e=" . $e->getMessage());
 		}
 	}
 

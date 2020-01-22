@@ -2,6 +2,7 @@ phpmyadmin
 storage
 vendor
 inc/config.php
+ips.txt
 ss/*.jpg
 web/*.txt
 replays/*.osr
