@@ -1323,6 +1323,15 @@ class D {
 						$result .= "$beatmapID has been ranked and its scores have been restored. | ";
 					break;
 
+					// Unrank beatmap (INCASE ITS TOO BAD TO PLAY)
+					case "unrank":
+						$GLOBALS["db"]->execute("UPDATE beatmaps SET ranked = 0, ranked_status_freezed = 1 WHERE beatmap_id = ? LIMIT 1", [$beatmapID]);
+
+						// Restore old scores
+						$GLOBALS["db"]->execute("UPDATE scores s JOIN (SELECT userid, MAX(score) maxscore FROM scores JOIN beatmaps ON scores.beatmap_md5 = beatmaps.beatmap_md5 WHERE beatmaps.beatmap_md5 = (SELECT beatmap_md5 FROM beatmaps WHERE beatmap_id = ? LIMIT 1) GROUP BY userid) s2 ON s.score = s2.maxscore AND s.userid = s2.userid SET completed = 2", [$beatmapID]);
+						$result .= "$beatmapID has been ranked and its scores have been mark as old scores. | ";
+					break;
+
 					// Force osu!api update (unfreeze)
 					case "update":
 						$updateCache = true;

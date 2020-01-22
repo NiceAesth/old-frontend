@@ -58,6 +58,7 @@ $("document").ready(function() {
 							<th>Frozen</td>
 							<th>PP (std SS)</td>
 							<th>Rank</td>
+							<th>Unrank (Pending)</td>
 							<th>Reset status<br>from osu!api</td>
 							<th>Don't edit</td>
 						</thead>
@@ -76,6 +77,7 @@ $("document").ready(function() {
 						<td class="info"><span class="mobile-only rank">Frozen:</span> <span>${escapeHtml(String(readableYesNo(value.frozen)))}</span></td>
 						<td class="info"><span class="mobile-only rank">PP:</span>${printPP(value.pp, value.id)}</td>
 						<td class="success"><span class="mobile-only rank">Rank</span> <input name="beatmaps[${escapeHtml(String(value.id))}]${escapeHtml(String(value.id))}" value="rank" type="radio"></td>
+						<td class="success"><span class="mobile-only">Unrank</span> <input name="beatmaps[${escapeHtml(String(value.id))}]${escapeHtml(String(value.id))}" value="unrank" type="radio"></td>
 						<td class="success"><span class="mobile-only">Reset status from osu!api</span> <input name="beatmaps[${escapeHtml(String(value.id))}]${escapeHtml(String(value.id))}" value="update" type="radio"></td>
 						<td class="success"><span class="mobile-only">Don't edit</span> <input name="beatmaps[${escapeHtml(String(value.id))}]${escapeHtml(String(value.id))}" value="no" type="radio" checked></td>
 					</tr>`;
