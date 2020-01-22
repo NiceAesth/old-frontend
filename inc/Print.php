@@ -28,6 +28,9 @@ class P {
 			$totalPP += $pp;
 		}*/
 		// $totalPP = "🍆";
+		
+		// THIS SLOW DOWN THE ADMIN PANEL WAHHHHHHHHH
+		/*
 		$recentPlays = $GLOBALS['db']->fetchAll('
 		SELECT
 			beatmaps.song_name, scores.beatmap_md5, users.username,
@@ -38,6 +41,8 @@ class P {
 		LEFT JOIN users ON users.id = scores.userid
 		ORDER BY scores.id DESC
 		LIMIT 10');
+		*/
+		$recentPlays = [];
 		$topPlays = [];
 		/*$topPlays = $GLOBALS['db']->fetchAll('SELECT
 			beatmaps.song_name, scores.beatmap_md5, users.username,
@@ -78,6 +83,7 @@ class P {
 		<tr><th class="text-left"><i class="fa fa-clock-o"></i>	Recent plays</th><th>Beatmap</th></th><th>Mode</th><th>Sent</th><th>Score</th><th class="text-right">PP</th></tr>
 		</thead>
 		<tbody>';
+		echo '<tr class="danger"><td colspan=6>Disabled</td></tr>';
 		foreach ($recentPlays as $play) {
 			// set $bn to song name by default. If empty or null, replace with the beatmap md5.
 			$bn = $play['song_name'];
@@ -401,10 +407,15 @@ class P {
 				// Allow to edit only user stats
 				$readonly[0] = 'readonly';
 				$selectDisabled = 'disabled';
+
+			// idk what the f--- did i do
+			/*
 			} elseif (($userData["privileges"] & Privileges::AdminManageUsers) > 0) {
 				// We are trying to edit a user with same/higher rank than us :akerino:
 				redirect("index.php?p=102&e=You don't have enough permissions to edit this user");
 				die();
+			*/
+
 			}
 			// Print edit user stuff
 			echo '<div id="wrapper">';
@@ -3390,7 +3401,7 @@ WHERE users.$kind = ? LIMIT 1", [$u]);
 						echo '<input name="endts" value="' . $endts . '" hidden>';
 					}
 					echo '</form>';
-					echo '<div class="text-center"><button type="submit" form="restore-scores" class="btn btn-danger">Restore scores (might take a while)</button></div>';
+					echo '<div class="text-center"><button type="submit" form="restore-scores" class="btn btn-danger">Restore scores</button></div>';
 				}
 			}
 			echo '</div>';
