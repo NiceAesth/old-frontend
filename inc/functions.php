@@ -1647,8 +1647,10 @@ function removeFromLeaderboard($userID) {
 	$country = strtolower($GLOBALS["db"]->fetch("SELECT country FROM users_stats WHERE id = ? LIMIT 1", [$userID])["country"]);
 	foreach (["std", "taiko", "ctb", "mania"] as $key => $value) {
 		$GLOBALS["redis"]->zrem("ripple:leaderboard:".$value, $userID);
+		$GLOBALS["redis"]->zrem("ripple:leaderboard_relax:".$value, $userID);
 		if (strlen($country) > 0 && $country != "xx") {
 			$GLOBALS["redis"]->zrem("ripple:leaderboard:".$value.":".$country, $userID);
+			$GLOBALS["redis"]->zrem("ripple:leaderboard_relax:".$value.":".$country, $userID);
 		}
 	}
 }
