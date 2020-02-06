@@ -88,8 +88,8 @@ $("document").ready(function() {
 				tableHtml += `</tbody></table>`;
 				tableHtml += `<div class="mobile-flex">`
 				tableHtml += `<button id="rank-all" type="button" class="btn btn-success"><span class="glyphicon glyphicon-thumbs-up"></span>	Rank everything</button>`;
-				tableHtml += `	<button id="love-all" type="button" class="btn btn-info"><span class="glyphicon glyphicon-heart"></span>	Love everything</button>`;
-				tableHtml += `	<button id="unrank-all" type="button" class="btn btn-info"><span class="glyphicon glyphicon-thumbs-down"></span>	Unrank everything</button>`;
+				tableHtml += `	<button id="love-all" type="button" class="btn btn-pink"><span class="glyphicon glyphicon-heart"></span>	Love everything</button>`;
+				tableHtml += `	<button id="unrank-all" type="button" class="btn btn-elegant"><span class="glyphicon glyphicon-thumbs-down"></span>	Unrank everything</button>`;
 				tableHtml += `	<button id="update-all" type="button" class="btn btn-warning"><span class="glyphicon glyphicon-thumbs-down"></span>	Update everything</button>`;
 				tableHtml += `<div style="margin-bottom: 5px;"></div>`;
 				tableHtml += `<a href="http://osu.ppy.sh/s/${escapeHtml(String(bsid))}" target="_blank" type="button" class="btn btn-info"><span class="glyphicon glyphicon-arrow-down"></span>	Download beatmap set</a>`;
