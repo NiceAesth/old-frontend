@@ -34,7 +34,7 @@ date_default_timezone_set('Europe/Rome');
 $GLOBALS['db'] = new DBPDO();
 // Birthday
 global $isBday;
-$isBday = date("dm") == "1208";
+$isBday = date("dm") == "0508";
 /****************************************
  **			GENERAL FUNCTIONS 		   **
  ****************************************/
