@@ -1321,6 +1321,7 @@ class D {
 						// Restore old scores
 						$GLOBALS["db"]->execute("UPDATE scores s JOIN (SELECT userid, MAX(score) maxscore FROM scores JOIN beatmaps ON scores.beatmap_md5 = beatmaps.beatmap_md5 WHERE beatmaps.beatmap_md5 = (SELECT beatmap_md5 FROM beatmaps WHERE beatmap_id = ? LIMIT 1) GROUP BY userid) s2 ON s.score = s2.maxscore AND s.userid = s2.userid SET completed = 3", [$beatmapID]);
 						$result .= "$beatmapID has been ranked and its scores have been restored. | ";
+						$rap .= "ranked";
 					break;
 						
 					// Love beatmap (INCASE THE BEATMAP IS TOO MUCH PP)
@@ -1330,6 +1331,7 @@ class D {
 						// Restore old scores
 						$GLOBALS["db"]->execute("UPDATE scores s JOIN (SELECT userid, MAX(score) maxscore FROM scores JOIN beatmaps ON scores.beatmap_md5 = beatmaps.beatmap_md5 WHERE beatmaps.beatmap_md5 = (SELECT beatmap_md5 FROM beatmaps WHERE beatmap_id = ? LIMIT 1) GROUP BY userid) s2 ON s.score = s2.maxscore AND s.userid = s2.userid SET completed = 3", [$beatmapID]);
 						$result .= "$beatmapID has been loved and its scores have been restored. | ";
+						$rap .= "loved";
 					break;
 
 					// Unrank beatmap (INCASE ITS TOO BAD TO PLAY)
@@ -1339,6 +1341,7 @@ class D {
 						// Restore old scores
 						$GLOBALS["db"]->execute("UPDATE scores s JOIN (SELECT userid, MAX(score) maxscore FROM scores JOIN beatmaps ON scores.beatmap_md5 = beatmaps.beatmap_md5 WHERE beatmaps.beatmap_md5 = (SELECT beatmap_md5 FROM beatmaps WHERE beatmap_id = ? LIMIT 1) GROUP BY userid) s2 ON s.score = s2.maxscore AND s.userid = s2.userid SET completed = 2", [$beatmapID]);
 						$result .= "$beatmapID has been ranked and its scores have been mark as old scores. | ";
+						$rap .= "unranked";
 					break;
 
 					// Force osu!api update (unfreeze)
@@ -1346,12 +1349,14 @@ class D {
 						$updateCache = true;
 						$GLOBALS["db"]->execute("UPDATE beatmaps SET ranked = 0, ranked_status_freezed = 0 WHERE beatmap_id = ? LIMIT 1", [$beatmapID]);
 						$result .= "$beatmapID's ranked status is the same from official osu!. | ";
+						$rap .= "updated status from bancho for";
 					break;
 
 					// No changes
 					case "no":
 						$logToRap = false;
 						$result .= "$beatmapID's ranked status has not been edited!. | ";
+						$rap .= "nothing to do with";
 					break;
 
 					// EH! VOLEVI!
@@ -1362,7 +1367,7 @@ class D {
 
 				// RAP Log
 				if ($logToRap)
-					rapLog(sprintf("has %s beatmap set %s", $status == "rank" ? "ranked" : "unranked", $bsid), $_SESSION["userid"]);
+					rapLog(sprintf("has %s beatmap set %s", $rap, $bsid), $_SESSION["userid"]);
 			}
 
 			// Update beatmap set from osu!api if
@@ -1376,13 +1381,24 @@ class D {
 			}
 
 			// Send a message to #announce
-			$bm = $GLOBALS["db"]->fetch("SELECT beatmapset_id, song_name FROM beatmaps WHERE beatmapset_id = ? LIMIT 1", [$bsid]);
-			$msg = "[https://osu.ppy.sh/s/" . $bsid . " " . $bm["song_name"] . "] is now ranked!";
-			$to = "#announce";
-			$requesturl = $URL["bancho"] . "/api/v1/fokabotMessage?k=" . urlencode($ScoresConfig["api_key"]) . "&to=" . urlencode($to) . "&msg=" . urlencode($msg);
-			$resp = getJsonCurl($requesturl);
-			if ($resp["message"] != "ok") {
-				rapLog("failed to send FokaBot message :( err: " . print_r($resp["message"], true));
+			if ($status == "rank") {
+				$bm = $GLOBALS["db"]->fetch("SELECT beatmapset_id, song_name FROM beatmaps WHERE beatmapset_id = ? LIMIT 1", [$bsid]);
+				$msg = "[https://osu.ppy.sh/s/" . $bsid . " " . $bm["song_name"] . "] is now ranked!";
+				$to = "#announce";
+				$requesturl = $URL["bancho"] . "/api/v1/fokabotMessage?k=" . urlencode($ScoresConfig["api_key"]) . "&to=" . urlencode($to) . "&msg=" . urlencode($msg);
+				$resp = getJsonCurl($requesturl);
+			} else if ($status == "love") {
+				$bm = $GLOBALS["db"]->fetch("SELECT beatmapset_id, song_name FROM beatmaps WHERE beatmapset_id = ? LIMIT 1", [$bsid]);
+				$msg = "[https://osu.ppy.sh/s/" . $bsid . " " . $bm["song_name"] . "] is now loved!";
+				$to = "#announce";
+				$requesturl = $URL["bancho"] . "/api/v1/fokabotMessage?k=" . urlencode($ScoresConfig["api_key"]) . "&to=" . urlencode($to) . "&msg=" . urlencode($msg);
+				$resp = getJsonCurl($requesturl);
+			} else if ($status == "unrank") {
+				$bm = $GLOBALS["db"]->fetch("SELECT beatmapset_id, song_name FROM beatmaps WHERE beatmapset_id = ? LIMIT 1", [$bsid]);
+				$msg = "[https://osu.ppy.sh/s/" . $bsid . " " . $bm["song_name"] . "] just got unranked!";
+				$to = "#announce";
+				$requesturl = $URL["bancho"] . "/api/v1/fokabotMessage?k=" . urlencode($ScoresConfig["api_key"]) . "&to=" . urlencode($to) . "&msg=" . urlencode($msg);
+				$resp = getJsonCurl($requesturl);
 			}
 
 			// Done
