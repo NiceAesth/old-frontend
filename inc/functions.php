@@ -63,7 +63,7 @@ function redirect($url) {
  * @param (string) ($fn) Output file name
  * @param ($v) Variable to output
 */
-function outputVariable($v, $fn = "/tmp/ripple.txt") {
+function outputVariable($v, $fn = "/tmp/ainu.txt") {
 	file_put_contents($fn, var_export($v, true), FILE_APPEND);
 }
 /*
@@ -100,11 +100,11 @@ function getIP() {
 */
 function setTitle($p) {
 	if (isset($_COOKIE['st']) && $_COOKIE['st'] == 1) {
-		// Safe title, so Peppy doesn't know we are browsing Ripple
+		// Safe title, so Peppy doesn't know we are browsing Ainu
 		return '<title>Google</title>';
 	} else {
-		$namesRipple = [
-			1 =>   'Custom osu! server',
+		$namesAinu = [
+			1 =>   'Private osu! server',
 			3 =>   'Register',
 			4 =>   'User CP',
 			5 =>   'Change avatar',
@@ -118,7 +118,7 @@ function setTitle($p) {
 			41 =>  'Elmo! Stop!',
 			'u' => 'Userpage',
 		];
-		$namesRAP = [
+		$namesAAP = [
 			99 =>  'You\'ve been tracked',
 			100 => 'Dashboard',
 			101 => 'System settings',
@@ -154,12 +154,12 @@ function setTitle($p) {
 			138 => 'Top Scores Results',
 			139 => 'S3 Replays Buckets',
 		];
-		if (isset($namesRipple[$p])) {
-			return __maketitle('Ripple', $namesRipple[$p]);
-		} else if (isset($namesRAP[$p])) {
-			return __maketitle('RAP', $namesRAP[$p]);
+		if (isset($namesAinu[$p])) {
+			return __maketitle('Ainu', $namesAinu[$p]);
+		} else if (isset($namesAAP[$p])) {
+			return __maketitle('AAP', $namesAAP[$p]);
 		} else {
-			return __maketitle('Ripple', '404');
+			return __maketitle('Ainu', '404');
 		}
 	}
 }
@@ -480,7 +480,7 @@ function printAdminSidebar() {
 	echo '<div id="sidebar-wrapper" class="collapse" aria-expanded="false">
 					<ul class="sidebar-nav">
 						<li class="sidebar-brand">
-							<a href="#"><b>R</b>ipple <b>A</b>dmin <b>P</b>anel</a>
+							<a href="#"><b>A</b>inu <b>A</b>dmin <b>P</b>anel</a>
 						</li>
 						<li><a href="index.php?p=100"><i class="fa fa-tachometer-alt"></i>	Dashboard</a></li>';
 
@@ -580,12 +580,12 @@ function countryCodeToReadable($cc) {
 }
 /*
  * getAllowedUsers()
- * Get an associative array, saying whether a user is banned or not on Ripple.
+ * Get an associative array, saying whether a user is banned or not on Ainu.
  *
  * @returns (array) see above.
 
 function getAllowedUsers($by = 'username') {
-	// get all the allowed users in Ripple
+	// get all the allowed users in Ainu
 	$allowedUsersRaw = $GLOBALS['db']->fetchAll('SELECT '.$by.', allowed FROM users');
 	// Future array containing all the allowed users.
 	$allowedUsers = [];
@@ -693,8 +693,8 @@ function updateLatestActivity($u) {
 /*
  * updateSafeTitle
  * Updates the st cookie, if 1 title is "Google" instead
- * of Ripple - pagename, so Peppy doesn't know that
- * we are browsing Ripple
+ * of Ainu - pagename, so Peppy doesn't know that
+ * we are browsing Ainu
 */
 function updateSafeTitle() {
 	$safeTitle = $GLOBALS['db']->fetch('SELECT safe_title FROM users_stats WHERE username = ?', $_SESSION['username']);
