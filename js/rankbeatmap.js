@@ -12,7 +12,7 @@ function readableRankedStatus(ranked) {
 	} else if (ranked == 4) {
 		return "Qualified (ranked)"
 	} else if (ranked == 5) {
-		return "Unknown"
+		return "Loved"
 	}
 }
 
@@ -58,6 +58,7 @@ $("document").ready(function() {
 							<th>Frozen</td>
 							<th>PP (std SS)</td>
 							<th>Rank</td>
+							<th>Love</td>
 							<th>Unrank (Pending)</td>
 							<th>Reset status<br>from osu!api</td>
 							<th>Don't edit</td>
@@ -77,6 +78,7 @@ $("document").ready(function() {
 						<td class="info"><span class="mobile-only rank">Frozen:</span> <span>${escapeHtml(String(readableYesNo(value.frozen)))}</span></td>
 						<td class="info"><span class="mobile-only rank">PP:</span>${printPP(value.pp, value.id)}</td>
 						<td class="success"><span class="mobile-only rank">Rank</span> <input name="beatmaps[${escapeHtml(String(value.id))}]${escapeHtml(String(value.id))}" value="rank" type="radio"></td>
+						<td class="success"><span class="mobile-only">Love</span> <input name="beatmaps[${escapeHtml(String(value.id))}]${escapeHtml(String(value.id))}" value="love" type="radio"></td>
 						<td class="success"><span class="mobile-only">Unrank</span> <input name="beatmaps[${escapeHtml(String(value.id))}]${escapeHtml(String(value.id))}" value="unrank" type="radio"></td>
 						<td class="success"><span class="mobile-only">Reset status from osu!api</span> <input name="beatmaps[${escapeHtml(String(value.id))}]${escapeHtml(String(value.id))}" value="update" type="radio"></td>
 						<td class="success"><span class="mobile-only">Don't edit</span> <input name="beatmaps[${escapeHtml(String(value.id))}]${escapeHtml(String(value.id))}" value="no" type="radio" checked></td>
@@ -86,7 +88,8 @@ $("document").ready(function() {
 				tableHtml += `</tbody></table>`;
 				tableHtml += `<div class="mobile-flex">`
 				tableHtml += `<button id="rank-all" type="button" class="btn btn-success"><span class="glyphicon glyphicon-thumbs-up"></span>	Rank everything</button>`;
-				tableHtml += `	<button id="unrank-all" type="button" class="btn btn-info"><span class="glyphicon glyphicon-thumbs-down"></span> Unrank everything</button>`;
+				tableHtml += `	<button id="love-all" type="button" class="btn btn-info"><span class="glyphicon glyphicon-heart"></span>	Love everything</button>`;
+				tableHtml += `	<button id="unrank-all" type="button" class="btn btn-info"><span class="glyphicon glyphicon-thumbs-down"></span>	Unrank everything</button>`;
 				tableHtml += `	<button id="update-all" type="button" class="btn btn-warning"><span class="glyphicon glyphicon-thumbs-down"></span>	Update everything</button>`;
 				tableHtml += `<div style="margin-bottom: 5px;"></div>`;
 				tableHtml += `<a href="http://osu.ppy.sh/s/${escapeHtml(String(bsid))}" target="_blank" type="button" class="btn btn-info"><span class="glyphicon glyphicon-arrow-down"></span>	Download beatmap set</a>`;
@@ -144,6 +147,10 @@ function updateTriggers() {
 		$("[value=rank]").prop("checked", true);
 	});
 
+	$("#love-all").click(function() {
+		$("[value=love]").prop("checked", true);
+	});
+	
 	$("#unrank-all").click(function() {
 		$("[value=unrank]").prop("checked", true);
 	});
