@@ -375,10 +375,10 @@ function printPage($p) {
 			break;
 
 			// Admin panel - S3 replays buckets
-			case 139:
-				sessionCheckAdmin(Privileges::AdminCaker);
-				P::AdminS3ReplaysBuckets();
-			break;
+			//case 139:
+			//	sessionCheckAdmin(Privileges::AdminCaker);
+			//	P::AdminS3ReplaysBuckets();
+			//break;
 
 			// 404 page
 			default:
@@ -485,10 +485,6 @@ function printAdminSidebar() {
 						if (hasPrivilege(Privileges::AdminManageSettings)) {
 							echo '<li><a href="index.php?p=101"><i class="fa fa-cog"></i>	System settings</a></li>
 							<li><a href="index.php?p=111"><i class="fa fa-server"></i>	Bancho settings</a></li>';
-						}
-
-						if (hasPrivilege(Privileges::AdminCaker)) {
-							echo '<li><a href="index.php?p=139"><i class="fa fa-boxes"></i>	S3 Replays Buckets</a></li>';
 						}
 
 						if (hasPrivilege(Privileges::AdminSilenceUsers)) {

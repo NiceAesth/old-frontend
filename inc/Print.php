@@ -3719,55 +3719,6 @@ WHERE users.$kind = ? LIMIT 1", [$u]);
 		echo '</div>';
 		echo '</div>';
 	}
-	public static function AdminS3ReplaysBuckets() {
-		// Get data
-		$buckets = $GLOBALS['db']->fetchAll('SELECT * FROM s3_replay_buckets ORDER BY id ASC');
-		// Print sidebar and template stuff
-		echo '<div id="wrapper">';
-		printAdminSidebar();
-		echo '<div id="page-content-wrapper">';
-		// Maintenance check
-		self::MaintenanceStuff();
-		// Print Success if set
-		if (isset($_GET['s']) && !empty($_GET['s'])) {
-			self::SuccessMessageStaccah($_GET['s']);
-		}
-		// Print Exception if set
-		if (isset($_GET['e']) && !empty($_GET['e'])) {
-			self::ExceptionMessageStaccah($_GET['e']);
-		}
-		// Header
-		echo '<span class="centered"><h2><i class="fa fa-boxes"></i>	S3 Replay Buckets</h2></span>';
-		echo '<div class="container alert alert-warning" role="alert"><p align="center">The maximum recommended size for a SCW object storage bucket is about 500000 files according to their FAQ. Huge buckets work, but after about 5 million files uploads don\'t work anymore for some reason. Please ask Nyo to create a new bucket from SCW\'s control panel if the current write buckets becomes too big.</div>';
-		// Main page content here
-		echo '<div align="center">';
-		echo '<table class="table table-striped table-hover table-75-center">
-		<thead>
-		<tr><th class="text-center"><i class="fa fa-box"></i>	ID</th><th class="text-center">Name</th><th class="text-center">Size</th><th class="text-center">Max score id</th><th class="text-center">Action</th></tr>
-		</thead>
-		<tbody>';
-		foreach ($buckets as $bucket) {
-			echo "<tr class='" . ($bucket["max_score_id"] === null ? "success" : "") . "'>
-					<td style='text-align: center;'>$bucket[id]</td>
-					<td style='text-align: center;'>$bucket[name]</td>
-					<td style='text-align: center;'>" . number_format($bucket["size"]) . "</td>
-					<td style='text-align: center;'>" . ($bucket["max_score_id"] !== null ? $bucket["max_score_id"] : "<i class='fa fa-fill-drip'></i>" ). "</td>
-					<td style='text-align: center;'>
-						<div class='btn-group-justified'>
-							<a disabled href='#' title='Set as write bucket' class='btn btn-xs btn-success'><i class='fa fa-fill-drip'></i></a>
-						</div>
-					</td>
-				</tr>";
-		}
-		echo '</tbody>
-		</table>';
-
-		echo '<a href="#" type="button" class="btn btn-primary" disabled>Add bucket</a>';
-
-		echo '</div>';
-		// Template end
-		echo '</div>';
-	}
 }
 
 // LISCIAMI LE MELE SUDICIO
