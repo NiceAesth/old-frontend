@@ -1,6 +1,6 @@
 $(document).ready(function() {
 	$("#pipoli").append("<div><i class='fa fa-circle-o-notch fa-spin fa-3x'></i></div><div>Loading Celeste Pipoli</div>");
-	$.get("https://status.ripple.moe/backend/status_data.php", function(data) {
+	$.get("https://status.ripple.moe/backend/status_data.php", function(data) { //TO-DO: Copy ripple's pipoli thinger lmao
 		$("#pipoli").html("");
 		for(var key in data) {
 			if (!data.hasOwnProperty(key) || data[key].secondary) continue;

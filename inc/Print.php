@@ -55,8 +55,8 @@ class P {
 		printAdminPanel('yellow', 'fa fa-dot-circle fa-5x', number_format($totalPP), 'Sum of weighted PP');
 		echo '</div>';
 		// Pipoli integration
-		echo '<div id="pipoli" class="row" style="margin-bottom: 0;"></div>';
-		echo '<div style="text-align: right;"><i>Data provided by Pipoli. <a href="https://status.sirohi.xyz" target="_blank">Full status page here.</a></i></div>';
+		//echo '<div id="pipoli" class="row" style="margin-bottom: 0;"></div>';
+		//echo '<div style="text-align: right;"><i>Data provided by Pipoli. <a href="https://status.sirohi.xyz" target="_blank">Full status page here.</a></i></div>';
 		// Recent plays table
 		echo '<table class="table table-striped table-hover" style="margin-top: 20px;">
 		<thead>
