@@ -29,21 +29,10 @@ class P {
 		}*/
 		// $totalPP = "🍆";
 		
-		// THIS SLOW DOWN THE ADMIN PANEL WAHHHHHHHHH
-		
-		$recentPlays = $GLOBALS['db']->fetchAll('
-		SELECT scores.beatmap_md5, users.username, scores.userid, scores.time, scores.score, scores.pp, scores.play_mode, scores.mods FROM scores LEFT JOIN users ON users.id = scores.userid WHERE users.privileges & 1 ORDER BY scores.id DESC LIMIT 10');
+		$recentPlays = $GLOBALS['db']->fetchAll('SELECT scores.beatmap_md5, users.username, scores.userid, scores.time, scores.score, scores.pp, scores.play_mode, scores.mods FROM scores LEFT JOIN users ON users.id = scores.userid WHERE users.privileges & 1 ORDER BY scores.id DESC LIMIT 10');
 
-		$topPlays = [];
-		/*$topPlays = $GLOBALS['db']->fetchAll('SELECT
-			beatmaps.song_name, scores.beatmap_md5, users.username,
-			scores.userid, scores.time, scores.score, scores.pp,
-			scores.play_mode, scores.mods
-		FROM scores
-		LEFT JOIN beatmaps ON beatmaps.beatmap_md5 = scores.beatmap_md5
-		LEFT JOIN users ON users.id = scores.userid
-		WHERE users.privileges & 1 > 0
-		ORDER BY scores.pp DESC LIMIT 30');*/
+		$topPlays = $GLOBALS['db']->fetchAll('SELECT scores.beatmap_md5, users.username, scores.userid, scores.time, scores.score, scores.pp, scores.play_mode, scores.mods FROM scores LEFT JOIN users ON users.id = scores.userid WHERE users.privileges & 1 ORDER BY scores.pp DESC LIMIT 30');
+
 		$onlineUsers = $GLOBALS["redis"]->get("ripple:online_users");
 		if ($onlineUsers == false) {
 			$onlineUsers = 0;

@@ -245,25 +245,6 @@ if ($p < 100) {
         function reallysure(redr) {
 			reallysuredialog() && window.location.replace(redr)
 		}
-
-		function play(id) {
-			var audio = $('#audio_'+id)[0];
-			if (audio.currentTime <= 0) {
-				$.each($('audio'), function () {
-					this.pause();
-					this.currentTime = 0;
-				});
-				$.each($("i[id^=icon_]"), function () {
-					this.className = "fa fa-play";
-				});
-				audio.play();
-				$('#icon_'+id)[0].className = "fa fa-stop";
-			} else {
-				audio.pause();
-				audio.currentTime = 0;
-				$('#icon_'+id)[0].className = "fa fa-play";
-			}
-		}
 		
 		function updateResolution () {
 			document.isMobile = window.matchMedia('(max-width: 768px)').matches

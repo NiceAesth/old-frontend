@@ -3,10 +3,9 @@
 class Login {
 	const PageID = 2;
 	const URL = 'login';
-	const Title = 'Ripple - Login';
+	const Title = 'Sirohi - Login';
 	const LoggedIn = false;
 	public $mh_POST = ['u', 'p'];
-	public $error_messages = ['You are not logged in.', 'Session expired. Please login again.', 'Invalid auto-login cookie.', 'You are already logged in.'];
 
 	public function P() {
 		clir(true, 'index.php?p=1&e=1');
@@ -23,7 +22,6 @@ class Login {
 		<p><label><input type="checkbox" name="remember" value="yes"> Stay logged in?</label></p>
 		<p style="line-height: 15px"></p>
 		<button type="submit" class="btn btn-primary">Login</button>
-		<a href="index.php?p=3" type="button" class="btn btn-default">Sign up</a>
 		</form>
 		</div>';
 	}
@@ -35,7 +33,6 @@ class Login {
 				redirect($_SESSION['redirpage']);
 			redirect('index.php?p=1');
 		} else {
-			addError($d['error']);
 			redirect('index.php?p=2');
 		}
 	}
@@ -62,7 +59,7 @@ class Login {
 			// Old frontend shall be seen by no human on earth. Except for
 			// staff members. Those aren't human.
 			if (!hasPrivilege(Privileges::AdminAccessRAP, $us["id"])) {
-				redirect("https://ripple.moe/login");
+				redirect("https://new.sirohi.xyz");
 			}
 
 			// Get username with right case

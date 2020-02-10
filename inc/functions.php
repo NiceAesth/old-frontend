@@ -101,21 +101,6 @@ function setTitle($p) {
 		// Safe title, so Peppy doesn't know we are browsing Sirohi
 		return '<title>Google</title>';
 	} else {
-		$namesSirohi = [
-			1 =>   'Private osu! server',
-			3 =>   'Register',
-			4 =>   'User CP',
-			5 =>   'Change avatar',
-			6 =>   'Edit user settings',
-			7 =>   'Change password',
-			8 =>   'Edit userpage',
-			18 =>  'Recover your password',
-			21 =>  'About',
-			23 =>  'Rules',
-			26 =>  'Friends',
-			41 =>  'Elmo! Stop!',
-			'u' => 'Userpage',
-		];
 		$namesSAP = [
 			99 =>  'You\'ve been tracked',
 			100 => 'Dashboard',
@@ -139,10 +124,6 @@ function setTitle($p) {
 			125 => 'Rank beatmap manually',
 			126 => 'Reports',
 			127 => 'View report',
-			128 => 'Cakes',
-			129 => 'View cake',
-			130 => 'Cake recipes',
-			131 => 'View cake recipe',
 			132 => 'View anticheat reports',
 			133 => 'View anticheat report',
 			134 => 'Restore scores',
@@ -150,11 +131,8 @@ function setTitle($p) {
 			136 => 'Search users by IP - Results',
 			137 => 'Top Scores',
 			138 => 'Top Scores Results',
-			139 => 'S3 Replays Buckets',
 		];
-		if (isset($namesSirohi[$p])) {
-			return __maketitle('Sirohi', $namesSirohi[$p]);
-		} else if (isset($namesSAP[$p])) {
+		if (isset($namesSAP[$p])) {
 			return __maketitle('SAP', $namesSAP[$p]);
 		} else {
 			return __maketitle('Sirohi', '404');
@@ -200,61 +178,63 @@ function printPage($p) {
 					P::ExceptionMessage($exceptions[$e]);
 				}
 			break;
-				// Home
-
+			
+			// Home
 			case 1:
-				P::HomePage();
+				sessionCheckAdmin();
+				redirect("index.php?p=100");
 			break;
+			
 
-				// Admin panel (> 100 pages are admin ones)
+			// Admin panel (> 100 pages are admin ones)
 			case 100:
 				sessionCheckAdmin();
 				P::AdminDashboard();
 			break;
-				// Admin panel - System settings
 
+			// Admin panel - System settings
 			case 101:
 				sessionCheckAdmin(Privileges::AdminManageSettings);
 				P::AdminSystemSettings();
 			break;
-				// Admin panel - Users
 
+			// Admin panel - Users
 			case 102:
 				sessionCheckAdmin(Privileges::AdminSilenceUsers);
 				P::AdminUsers();
 			break;
-				// Admin panel - Edit user
 
+			// Admin panel - Edit user
 			case 103:
 				sessionCheckAdmin(Privileges::AdminManageUsers);
 				P::AdminEditUser();
 			break;
-				// Admin panel - Change identity
 
+			// Admin panel - Change identity
 			case 104:
 				sessionCheckAdmin(Privileges::AdminManageUsers);
 				P::AdminChangeIdentity();
 			break;
-				// Admin panel - Badges
 
+			// Admin panel - Badges
 			case 108:
 				sessionCheckAdmin(Privileges::AdminManageBadges);
 				P::AdminBadges();
 			break;
-				// Admin panel - Edit badge
 
+			// Admin panel - Edit badge
 			case 109:
 				sessionCheckAdmin(Privileges::AdminManageBadges);
 				P::AdminEditBadge();
 			break;
-				// Admin panel - Edit uesr badges
 
+			// Admin panel - Edit uesr badges
 			case 110:
 				sessionCheckAdmin(Privileges::AdminManageUsers);
 				P::AdminEditUserBadges();
 			break;
-				// Admin panel - System settings
 
+			// Admin panel - System settings
 			case 111:
 				sessionCheckAdmin(Privileges::AdminManageSettings);
 				P::AdminBanchoSettings();
