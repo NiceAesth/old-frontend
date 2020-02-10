@@ -23,10 +23,8 @@ require_once $df.'/helpers/URL.php';
 require_once $df.'/helpers/APITokens.php';
 // controller system v2
 require_once $df.'/pages/Login.php';
-require_once $df.'/pages/Beatmaps.php';
 $pages = [
 	new Login(),
-	new Beatmaps(),
 ];
 // Set timezone to UTC
 date_default_timezone_set('Europe/Rome');
@@ -100,10 +98,10 @@ function getIP() {
 */
 function setTitle($p) {
 	if (isset($_COOKIE['st']) && $_COOKIE['st'] == 1) {
-		// Safe title, so Peppy doesn't know we are browsing Ainu
+		// Safe title, so Peppy doesn't know we are browsing Sirohi
 		return '<title>Google</title>';
 	} else {
-		$namesAinu = [
+		$namesSirohi = [
 			1 =>   'Private osu! server',
 			3 =>   'Register',
 			4 =>   'User CP',
@@ -118,7 +116,7 @@ function setTitle($p) {
 			41 =>  'Elmo! Stop!',
 			'u' => 'Userpage',
 		];
-		$namesAAP = [
+		$namesSAP = [
 			99 =>  'You\'ve been tracked',
 			100 => 'Dashboard',
 			101 => 'System settings',
@@ -154,12 +152,12 @@ function setTitle($p) {
 			138 => 'Top Scores Results',
 			139 => 'S3 Replays Buckets',
 		];
-		if (isset($namesAinu[$p])) {
-			return __maketitle('Ainu', $namesAinu[$p]);
-		} else if (isset($namesAAP[$p])) {
-			return __maketitle('AAP', $namesAAP[$p]);
+		if (isset($namesSirohi[$p])) {
+			return __maketitle('Sirohi', $namesSirohi[$p]);
+		} else if (isset($namesSAP[$p])) {
+			return __maketitle('SAP', $namesSAP[$p]);
 		} else {
-			return __maketitle('Ainu', '404');
+			return __maketitle('Sirohi', '404');
 		}
 	}
 }
@@ -580,12 +578,12 @@ function countryCodeToReadable($cc) {
 }
 /*
  * getAllowedUsers()
- * Get an associative array, saying whether a user is banned or not on Ainu.
+ * Get an associative array, saying whether a user is banned or not on Sirohi.
  *
  * @returns (array) see above.
 
 function getAllowedUsers($by = 'username') {
-	// get all the allowed users in Ainu
+	// get all the allowed users in Sirohi
 	$allowedUsersRaw = $GLOBALS['db']->fetchAll('SELECT '.$by.', allowed FROM users');
 	// Future array containing all the allowed users.
 	$allowedUsers = [];
@@ -693,8 +691,8 @@ function updateLatestActivity($u) {
 /*
  * updateSafeTitle
  * Updates the st cookie, if 1 title is "Google" instead
- * of Ainu - pagename, so Peppy doesn't know that
- * we are browsing Ainu
+ * of Sirohi - pagename, so Peppy doesn't know that
+ * we are browsing Sirohi
 */
 function updateSafeTitle() {
 	$safeTitle = $GLOBALS['db']->fetch('SELECT safe_title FROM users_stats WHERE username = ?', $_SESSION['username']);

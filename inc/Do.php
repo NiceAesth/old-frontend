@@ -1418,7 +1418,7 @@ class D {
 			} else {
 				$bsid = $GLOBALS["db"]->fetch("SELECT beatmapset_id FROM beatmaps WHERE beatmap_id = ? LIMIT 1", [$_POST["id"]]);
 				if (!$bsid) {
-					throw new Exception("Beatmap set not found in Ainu's database. Please use beatmap set id or load at least one difficulty in game before trying to rank a beatmap by its id.");
+					throw new Exception("Beatmap set not found in Sirohi's database. Please use beatmap set id or load at least one difficulty in game before trying to rank a beatmap by its id.");
 				}
 				$bsid = current($bsid);
 			}
@@ -1742,7 +1742,7 @@ class D {
 			redisConnect();
 			$GLOBALS["redis"]->publish("peppy:disconnect", json_encode([
 				"userID" => intval($_POST["id"]),
-				"reason" => "Your account has been deleted. Thank you for playing on Ainu!"
+				"reason" => "Your account has been deleted. Thank you for playing on Sirohi!"
 			]));
 
 			// Delete stuff...

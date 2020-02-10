@@ -30,19 +30,10 @@ class P {
 		// $totalPP = "🍆";
 		
 		// THIS SLOW DOWN THE ADMIN PANEL WAHHHHHHHHH
-		/*
+		
 		$recentPlays = $GLOBALS['db']->fetchAll('
-		SELECT
-			beatmaps.song_name, scores.beatmap_md5, users.username,
-			scores.userid, scores.time, scores.score, scores.pp,
-			scores.play_mode, scores.mods
-		FROM scores
-		LEFT JOIN beatmaps ON beatmaps.beatmap_md5 = scores.beatmap_md5
-		LEFT JOIN users ON users.id = scores.userid
-		ORDER BY scores.id DESC
-		LIMIT 10');
-		*/
-		$recentPlays = [];
+		SELECT scores.beatmap_md5, users.username, scores.userid, scores.time, scores.score, scores.pp, scores.play_mode, scores.mods FROM scores LEFT JOIN users ON users.id = scores.userid WHERE users.privileges & 1 ORDER BY scores.id DESC LIMIT 10');
+
 		$topPlays = [];
 		/*$topPlays = $GLOBALS['db']->fetchAll('SELECT
 			beatmaps.song_name, scores.beatmap_md5, users.username,
@@ -76,17 +67,16 @@ class P {
 		echo '</div>';
 		// Pipoli integration
 		echo '<div id="pipoli" class="row" style="margin-bottom: 0;"></div>';
-		echo '<div style="text-align: right;"><i>Data provided by Pipoli. <a href="https://status.ripple.moe" target="_blank">Full status page here.</a></i></div>';
+		echo '<div style="text-align: right;"><i>Data provided by Pipoli. <a href="https://status.sirohi.xyz" target="_blank">Full status page here.</a></i></div>';
 		// Recent plays table
 		echo '<table class="table table-striped table-hover" style="margin-top: 20px;">
 		<thead>
 		<tr><th class="text-left"><i class="fa fa-clock-o"></i>	Recent plays</th><th>Beatmap</th></th><th>Mode</th><th>Sent</th><th>Score</th><th class="text-right">PP</th></tr>
 		</thead>
 		<tbody>';
-		echo '<tr class="danger"><td colspan=6>Disabled</td></tr>';
 		foreach ($recentPlays as $play) {
 			// set $bn to song name by default. If empty or null, replace with the beatmap md5.
-			$bn = $play['song_name'];
+			$bn = current($GLOBALS['db']->fetch("SELECT beatmaps.song_name FROM beatmaps WHERE beatmaps.beatmap_md5 = '{$play['beatmap_md5']}' LIMIT 1"));
 			// Check if this beatmap has a name cached, if yes show it, otherwise show its md5
 			if (!$bn) {
 				$bn = $play['beatmap_md5'];
@@ -1256,9 +1246,9 @@ class P {
 		</p>';
 		global $isBday;
 		if ($isBday) {
-			echo '<h1>Happy birthday Ainu!</h1>';
+			echo '<h1>Happy birthday Sirohi!</h1>';
 		} else {
-			echo '<h1>Welcome to Ainu</h1>';
+			echo '<h1>Welcome to Sirohi</h1>';
 		}
 		// Home alert
 		self::HomeAlert();
@@ -2066,16 +2056,16 @@ WHERE users.$kind = ? LIMIT 1", [$u]);
 		self::GlobalAlert();
 		echo '<div class="narrow-content" style="width:500px"><h1><i class="fa fa-exclamation-circle"></i> Recover your password</h1>';
 		// Print Exception if set and in array.
-		$exceptions = ['Nice troll.', "That user doesn't exist.", "You are banned from Ainu. We won't let you come back in."];
+		$exceptions = ['Nice troll.', "That user doesn't exist.", "You are banned from Sirohi. We won't let you come back in."];
 		if (isset($_GET['e']) && isset($exceptions[$_GET['e']])) {
 			self::ExceptionMessage($exceptions[$_GET['e']]);
 		}
 		if (isset($_GET['s'])) {
-			self::SuccessMessage('You should have received an email containing instructions on how to recover your Ainu account.');
+			self::SuccessMessage('You should have received an email containing instructions on how to recover your Sirohi account.');
 		}
 		if (checkLoggedIn()) {
 			echo 'What are you doing here? You\'re already logged in, you moron!<br>';
-			echo 'If you really want to fake that you\'ve lost your password, you should at the very least log out of Ainu, you know.';
+			echo 'If you really want to fake that you\'ve lost your password, you should at the very least log out of Sirohi, you know.';
 		} else {
 			echo '<p>Let\'s get some things straight. We can only help you if you DID put your actual email address when you signed up. If you didn\'t, you\'re screwed. Hope to know the admins well enough to tell them to change the password for you, otherwise your account is now dead.</p><br>
 			<form action="submit.php" method="POST">
@@ -2102,11 +2092,11 @@ WHERE users.$kind = ? LIMIT 1", [$u]);
 				throw new Exception();
 			}
 			// Mod/admin, show alert and continue
-			echo '<div class="alert alert-warning" role="alert"><p align="center"><i class="fa fa-cog fa-spin"></i>	Ainu\'s website is in <b>maintenance mode</b>. Only moderators and administrators have access to the full website.</p></div>';
+			echo '<div class="alert alert-warning" role="alert"><p align="center"><i class="fa fa-cog fa-spin"></i>	Sirohi\'s website is in <b>maintenance mode</b>. Only moderators and administrators have access to the full website.</p></div>';
 		}
 		catch(Exception $e) {
 			// Normal user, show alert and die
-			echo '<div class="alert alert-warning" role="alert"><p align="center"><i class="fa fa-cog fa-spin"></i>	Ainu\'s website is in <b>maintenance mode</b>. We are working for you, <b>please come back later.</b></p></div>';
+			echo '<div class="alert alert-warning" role="alert"><p align="center"><i class="fa fa-cog fa-spin"></i>	Sirohi\'s website is in <b>maintenance mode</b>. We are working for you, <b>please come back later.</b></p></div>';
 			die();
 		}
 	}
@@ -2126,11 +2116,11 @@ WHERE users.$kind = ? LIMIT 1", [$u]);
 				throw new Exception();
 			}
 			// Mod/admin, show alert and continue
-			echo '<div class="alert alert-danger" role="alert"><p align="center"><i class="fa fa-cog fa-spin"></i>	Ainu\'s score system is in <b>maintenance mode</b>. <u>Your scores won\'t be saved until maintenance ends.</u><br><b>Make sure to disable game maintenance mode from the admin control panel as soon as possible!</b></p></div>';
+			echo '<div class="alert alert-danger" role="alert"><p align="center"><i class="fa fa-cog fa-spin"></i>	Sirohi\'s score system is in <b>maintenance mode</b>. <u>Your scores won\'t be saved until maintenance ends.</u><br><b>Make sure to disable game maintenance mode from the admin control panel as soon as possible!</b></p></div>';
 		}
 		catch(Exception $e) {
 			// Normal user, show alert and die
-			echo '<div class="alert alert-danger" role="alert"><p align="center"><i class="fa fa-cog fa-spin"></i>	Ainu\'s score system is in <b>maintenance mode</b>. <u>Your scores won\'t be saved until maintenance ends.</u></b></p></div>';
+			echo '<div class="alert alert-danger" role="alert"><p align="center"><i class="fa fa-cog fa-spin"></i>	Sirohi\'s score system is in <b>maintenance mode</b>. <u>Your scores won\'t be saved until maintenance ends.</u></b></p></div>';
 		}
 	}
 
@@ -2149,11 +2139,11 @@ WHERE users.$kind = ? LIMIT 1", [$u]);
 				throw new Exception();
 			}
 			// Mod/admin, show alert and continue
-			echo '<div class="alert alert-danger" role="alert"><p align="center"><i class="fa fa-server"></i>	Ainu\'s Bancho server is in maintenance mode. You can\'t play on Ainu right now. Try again later.<br><b>Make sure to disable game maintenance mode from the admin control panel as soon as possible!</b></p></div>';
+			echo '<div class="alert alert-danger" role="alert"><p align="center"><i class="fa fa-server"></i>	Sirohi\'s Bancho server is in maintenance mode. You can\'t play on Sirohi right now. Try again later.<br><b>Make sure to disable game maintenance mode from the admin control panel as soon as possible!</b></p></div>';
 		}
 		catch(Exception $e) {
 			// Normal user, show alert and die
-			echo '<div class="alert alert-danger" role="alert"><p align="center"><i class="fa fa-server"></i>	Ainu\'s Bancho server is in maintenance mode. You can\'t play on Ainu right now. Try again later.</p></div>';
+			echo '<div class="alert alert-danger" role="alert"><p align="center"><i class="fa fa-server"></i>	Sirohi\'s Bancho server is in maintenance mode. You can\'t play on Sirohi right now. Try again later.</p></div>';
 		}
 	}
 
