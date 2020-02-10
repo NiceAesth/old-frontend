@@ -61,7 +61,7 @@ function redirect($url) {
  * @param (string) ($fn) Output file name
  * @param ($v) Variable to output
 */
-function outputVariable($v, $fn = "/tmp/ainu.txt") {
+function outputVariable($v, $fn = "/tmp/sirohi.txt") {
 	file_put_contents($fn, var_export($v, true), FILE_APPEND);
 }
 /*
@@ -436,7 +436,7 @@ function printNavbar() {
 							</button>';
 						}
 						global $isBday;
-						echo $isBday ? '<a class="navbar-brand" href="index.php"><i class="fa fa-birthday-cake"></i><img src="https://ainu.pw/static/logos/text-white.png" style="display: inline; padding-left: 10px;"></a>' : '<a class="navbar-brand" href="index.php"><img src="https://ainu.pw/static/logos/text-white.png"></a>';
+						echo $isBday ? '<a class="navbar-brand" href="index.php"><i class="fa fa-birthday-cake"></i><img src="https://sirohi.xyz/static/logos/text-white.png" style="display: inline; padding-left: 10px;"></a>' : '<a class="navbar-brand" href="index.php"><img src="https://sirohi.xyz/static/logos/text-white.png"></a>';
 					echo '</div>
 					<div class="navbar-collapse collapse">';
 	// Left elements
@@ -478,7 +478,7 @@ function printAdminSidebar() {
 	echo '<div id="sidebar-wrapper" class="collapse" aria-expanded="false">
 					<ul class="sidebar-nav">
 						<li class="sidebar-brand">
-							<a href="#"><b>A</b>inu <b>A</b>dmin <b>P</b>anel</a>
+							<a href="#"><b>S</b>irohi <b>A</b>dmin <b>P</b>anel</a>
 						</li>
 						<li><a href="index.php?p=100"><i class="fa fa-tachometer-alt"></i>	Dashboard</a></li>';
 

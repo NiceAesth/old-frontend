@@ -1114,7 +1114,7 @@ class P {
 				foreach ($icons as $icon) {
 					echo'
 					<tr class="' . ($icon["is_current"] ? "success" : ($icon["is_default"] ? "warning": "")) . '">
-						<td><a href="https://i.ainu.pw/' . $icon["file_id"] . '.png" target="_blank">' . $icon["name"] . '</a> - <a href="' . $icon["url"] . '" target="_blank">' . $icon["url"] . '</td>
+						<td><a href="https://i.sirohi.xyz/' . $icon["file_id"] . '.png" target="_blank">' . $icon["name"] . '</a> - <a href="' . $icon["url"] . '" target="_blank">' . $icon["url"] . '</td>
 						<td style="text-align: right">
 							<a ' . ($icon["is_current"] ? "disabled" : "") . ' title="Set as main menu icon" class="btn btn-success btn-xs" href="submit.php?action=setMainMenuIcon&id=' . $icon["id"] . '&csrf='.csrfToken(). '"><i class="fa fa-check"></i></a>
 							<a ' . ($icon["is_default"] ? "disabled" : "") . ' title="Set as default main menu icon" class="btn btn-info btn-xs" href="submit.php?action=setDefaultMainMenuIcon&id=' . $icon["id"] . '&csrf='.csrfToken(). '"><i class="fa fa-asterisk"></i></a>
@@ -1242,7 +1242,7 @@ class P {
 			self::ExceptionMessage($error[$_GET['e']]);
 		}
 		echo '<p class="center aligned">
-		<div class="animated bounceIn ripple-logo"><img src="https://ainu.pw/static/logos/ainu.png"></div>
+		<div class="animated bounceIn ripple-logo"><img src="https://sirohi.xyz/static/logos/sirohi.png"></div>
 		</p>';
 		global $isBday;
 		if ($isBday) {
@@ -2556,7 +2556,7 @@ WHERE users.$kind = ? LIMIT 1", [$u]);
 
 		if (!hasPrivilege(Privileges::UserPublic)) {
 			echo '<div class="alert alert-danger" role="alert">
-					<p align="center"><i class="fa fa-exclamation-triangle"></i><b>Your account is currently in restricted mode</b> due to inappropriate behavior or a violation of the <a href=\'index.php?p=23\'>rules</a>.<br>You can\'t interact with other users, you can perform limited actions and your user profile and scores are hidden.<br>Read the <a href=\'index.php?p=23\'>rules</a> again carefully, and if you think this is an error, send an email to <b>support@ainu.pw</b>.</p>
+					<p align="center"><i class="fa fa-exclamation-triangle"></i><b>Your account is currently in restricted mode</b> due to inappropriate behavior or a violation of the <a href=\'index.php?p=23\'>rules</a>.<br>You can\'t interact with other users, you can perform limited actions and your user profile and scores are hidden.<br>Read the <a href=\'index.php?p=23\'>rules</a> again carefully, and if you think this is an error, send an email to <b>support@sirohi.xyz</b>.</p>
 				  </div>';
 		}
 	}
@@ -2845,7 +2845,7 @@ WHERE users.$kind = ? LIMIT 1", [$u]);
 				$assignee = "Useless";
 			} else {
 				$rowClass = "";
-				$assignee = '<img class="circle" style="width: 30px; height: 30px; margin-top: 0px;" src="https://a.ainu.pw/' . $report['assigned'] . '"> ' . getUserUsername($report['assigned']);
+				$assignee = '<img class="circle" style="width: 30px; height: 30px; margin-top: 0px;" src="https://a.sirohi.xyz/' . $report['assigned'] . '"> ' . getUserUsername($report['assigned']);
 			}
 			echo '<tr class="' . $rowClass . '">
 			<td><p class="text-center">'.$report['id'].'</p></td>
