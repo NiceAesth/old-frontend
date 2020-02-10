@@ -1,12 +1,14 @@
 <?php
 
 // We aren't calling the class Do because otherwise it would conflict with do { } while ();
-class D {
+class D
+{
 	/*
 	 * Register
 	 * Register function
 	*/
-	public static function Register() {
+	public static function Register()
+	{
 		global $reCaptchaConfig;
 		try {
 			// Check if everything is set
@@ -33,8 +35,8 @@ class D {
 			// Check if username is valid
 			if (!preg_match('/^[A-Za-z0-9 _\\-\\[\\]]{2,15}$/i', $_POST['u'])) {
 				throw new Exception("Username is not valid! It must be from 2 to 15 characters long, " .
-									"and can only contain alphanumeric chararacters, spaces, and these " .
-									"characters: <code>_-[]</code>");
+					"and can only contain alphanumeric chararacters, spaces, and these " .
+					"characters: <code>_-[]</code>");
 			}
 			// Make sure username is not forbidden
 			if (UsernameHelper::isUsernameForbidden($_POST['u'])) {
@@ -60,7 +62,7 @@ class D {
 			$data = [
 				"secret" => $reCaptchaConfig["secret_key"],
 				"response" => $_POST["g-recaptcha-response"]
- 			];
+			];
 			if ($reCaptchaConfig["ip"]) {
 				$data[] = [
 					"ip" => $ip
@@ -87,9 +89,11 @@ class D {
 			// Create password
 			$md5Password = password_hash(md5($_POST['p1']), PASSWORD_DEFAULT);
 			// Put some data into the db
-			$GLOBALS['db']->execute("INSERT INTO `users`(username, username_safe, password_md5, salt, email, register_datetime, privileges, password_version)
+			$GLOBALS['db']->execute(
+				"INSERT INTO `users`(username, username_safe, password_md5, salt, email, register_datetime, privileges, password_version)
 			                                     VALUES (?,        ?,             ?,            '',   ?,     ?,                 ?, 2);",
-												 		[$_POST['u'], $safe,      $md5Password,       $_POST['e'], time(true), Privileges::UserPendingVerification]);
+				[$_POST['u'], $safe,      $md5Password,       $_POST['e'], time(true), Privileges::UserPendingVerification]
+			);
 			// Get user ID
 			$uid = $GLOBALS['db']->lastInsertId();
 			// Put some data into users_stats
@@ -105,8 +109,8 @@ class D {
 			logIP($uid);
 			//addSuccess("You should now be signed up! Try to <a href='index.php?p=2'>login</a>.");
 			// All fine, done
-			redirect('index.php?p=38&u='.$uid);
-		} catch(Exception $e) {
+			redirect('index.php?p=38&u=' . $uid);
+		} catch (Exception $e) {
 			// Redirect to Exception page
 			addError($e->getMessage());
 			redirect('index.php?p=3&iseethestopsign=1');
@@ -117,7 +121,8 @@ class D {
 	 * ChangePassword
 	 * Change password function
 	*/
-	public static function ChangePassword() {
+	public static function ChangePassword()
+	{
 		try {
 			// Check if we are logged in
 			sessionCheck();
@@ -141,8 +146,7 @@ class D {
 			// Redirect to success page
 			addSuccess('Password changed!');
 			redirect('index.php?p=7');
-		}
-		catch(Exception $e) {
+		} catch (Exception $e) {
 			addError($e->getMessage());
 			// Redirect to Exception page
 			redirect('index.php?p=7');
@@ -153,7 +157,8 @@ class D {
 	 * SaveSystemSettings
 	 * Save system settings function (ADMIN CP)
 	*/
-	public static function SaveSystemSettings() {
+	public static function SaveSystemSettings()
+	{
 		try {
 			// Get values
 			if (isset($_POST['wm'])) {
@@ -187,7 +192,7 @@ class D {
 			$GLOBALS['db']->execute("UPDATE system_settings SET value_int = ? WHERE name = 'registrations_enabled' LIMIT 1", [$r]);
 			$GLOBALS['db']->execute("UPDATE system_settings SET value_string = ? WHERE name = 'website_global_alert' LIMIT 1", [$ga]);
 			$GLOBALS['db']->execute("UPDATE system_settings SET value_string = ? WHERE name = 'website_home_alert' LIMIT 1", [$ha]);
-			foreach (["std" , "taiko", "ctb", "mania"] as $key) {
+			foreach (["std", "taiko", "ctb", "mania"] as $key) {
 				if (!isset($_POST["aql_$key"]) || !is_numeric($_POST["aql_$key"])) {
 					continue;
 				}
@@ -195,15 +200,14 @@ class D {
 			}
 			redisConnect();
 			$GLOBALS["redis"]->publish("lets:reload_aql", "reload");
-			
+
 			// RAP log
 			rapLog("has updated system settings");
 			// Done, redirect to success page
 			redirect('index.php?p=101&s=Settings saved!');
-		}
-		catch(Exception $e) {
+		} catch (Exception $e) {
 			// Redirect to Exception page
-			redirect('index.php?p=101&e='.$e->getMessage());
+			redirect('index.php?p=101&e=' . $e->getMessage());
 		}
 	}
 
@@ -211,7 +215,8 @@ class D {
 	 * SaveBanchoSettings
 	 * Save bancho settings function (ADMIN CP)
 	*/
-	public static function SaveBanchoSettings() {
+	public static function SaveBanchoSettings()
+	{
 		try {
 			// Get values
 			if (isset($_POST['bm'])) {
@@ -264,10 +269,9 @@ class D {
 			rapLog("has updated bancho settings");
 			// Done, redirect to success page
 			redirect('index.php?p=111&s=Settings saved!');
-		}
-		catch(Exception $e) {
+		} catch (Exception $e) {
 			// Redirect to Exception page
-			redirect('index.php?p=111&e='.$e->getMessage());
+			redirect('index.php?p=111&e=' . $e->getMessage());
 		}
 	}
 
@@ -275,10 +279,11 @@ class D {
 	 * RunCron
 	 * Runs cron.php from admin cp with exec/redirect
 	*/
-	public static function RunCron() {
+	public static function RunCron()
+	{
 		if ($CRON['adminExec']) {
 			// howl master linux shell pr0
-			exec(PHP_BIN_DIR.'/php '.dirname(__FILE__).'/../cron.php 2>&1 > /dev/null &');
+			exec(PHP_BIN_DIR . '/php ' . dirname(__FILE__) . '/../cron.php 2>&1 > /dev/null &');
 		} else {
 			// Run from browser
 			redirect('./cron.php');
@@ -289,7 +294,8 @@ class D {
 	 * SaveEditUser
 	 * Save edit user function (ADMIN CP)
 	*/
-	public static function SaveEditUser() {
+	public static function SaveEditUser()
+	{
 		try {
 			// Check if everything is set (username color, username style, rank, allowed and notes can be empty)
 			if (!isset($_POST['id']) || !isset($_POST['u']) || !isset($_POST['e']) || !isset($_POST['up']) || !isset($_POST['aka']) || empty($_POST['id']) || empty($_POST['u']) || empty($_POST['e'])) {
@@ -301,7 +307,7 @@ class D {
 				throw new Exception("That user doesn\'t exist");
 			}
 			// Check if we can edit this user
-			if ( (($oldData["privileges"] & Privileges::AdminManageUsers) > 0) && $_POST['u'] != $_SESSION['username']) {
+			if ((($oldData["privileges"] & Privileges::AdminManageUsers) > 0) && $_POST['u'] != $_SESSION['username']) {
 				throw new Exception("You don't have enough permissions to edit this user");
 			}
 			// Check if email is valid
@@ -315,10 +321,10 @@ class D {
 			//$oldse = current($GLOBALS["db"]->fetch("SELECT silence_end FROM users WHERE username = ?", array($_POST["u"])));
 
 			// Save new data (email, and cm notes)
-			$GLOBALS['db']->execute('UPDATE users SET email = ?, notes = ? WHERE id = ? LIMIT 1', [$_POST['e'], $_POST['ncm'], $_POST['id'] ]);
+			$GLOBALS['db']->execute('UPDATE users SET email = ?, notes = ? WHERE id = ? LIMIT 1', [$_POST['e'], $_POST['ncm'], $_POST['id']]);
 			// Edit silence time if we can silence users
 			if (hasPrivilege(Privileges::AdminSilenceUsers)) {
-				$GLOBALS['db']->execute('UPDATE users SET silence_end = ?, silence_reason = ? WHERE id = ? LIMIT 1', [$_POST['se'], $_POST['sr'], $_POST['id'] ]);
+				$GLOBALS['db']->execute('UPDATE users SET silence_end = ?, silence_reason = ? WHERE id = ? LIMIT 1', [$_POST['se'], $_POST['sr'], $_POST['id']]);
 			}
 			// Edit privileges if we can
 			if (hasPrivilege(Privileges::AdminManagePrivileges) && ($_POST["id"] != $_SESSION["userid"])) {
@@ -359,10 +365,9 @@ class D {
 			rapLog(sprintf("has edited user %s", $_POST["u"]));
 			// Done, redirect to success page
 			redirect('index.php?p=102&s=User edited!');
-		}
-		catch(Exception $e) {
+		} catch (Exception $e) {
 			// Redirect to Exception page
-			redirect('index.php?p=102&e='.$e->getMessage());
+			redirect('index.php?p=102&e=' . $e->getMessage());
 		}
 	}
 
@@ -370,7 +375,8 @@ class D {
 	 * BanUnbanUser
 	 * Ban/Unban user function (ADMIN CP)
 	*/
-	public static function BanUnbanUser() {
+	public static function BanUnbanUser()
+	{
 		try {
 			// Check if everything is set
 			if (empty($_GET['id'])) {
@@ -382,11 +388,11 @@ class D {
 				throw new Exception("User doesn't exist");
 			}
 			// Check if we can ban this user
-			if ( ($userData["privileges"] & Privileges::AdminManageUsers) > 0) {
+			if (($userData["privileges"] & Privileges::AdminManageUsers) > 0) {
 				throw new Exception("You don't have enough permissions to ban this user");
 			}
 			// Get new allowed value
-			if ( ($userData["privileges"] & Privileges::UserNormal) > 0) {
+			if (($userData["privileges"] & Privileges::UserNormal) > 0) {
 				// Ban, reset UserNormal and UserPublic bits
 				$banDateTime = time();
 				$newPrivileges = $userData["privileges"] & ~Privileges::UserNormal;
@@ -406,10 +412,9 @@ class D {
 			rapLog(sprintf("has %s user %s", ($newPrivileges & Privileges::UserNormal) > 0 ? "unbanned" : "banned", $userData["username"]));
 			// Done, redirect to success page
 			redirect('index.php?p=102&s=User banned/unbanned/activated!');
-		}
-		catch(Exception $e) {
+		} catch (Exception $e) {
 			// Redirect to Exception page
-			redirect('index.php?p=102&e='.$e->getMessage());
+			redirect('index.php?p=102&e=' . $e->getMessage());
 		}
 	}
 
@@ -417,7 +422,8 @@ class D {
 	 * QuickEditUser
 	 * Redirects to the edit user page for the user with $_POST["u"] username
 	*/
-	public static function QuickEditUser($email = false) {
+	public static function QuickEditUser($email = false)
+	{
 		try {
 			// Check if everything is set
 			if (empty($_POST['u'])) {
@@ -430,11 +436,10 @@ class D {
 				throw new Exception("That user doesn't exist");
 			}
 			// Done, redirect to edit page
-			redirect('index.php?p=103&id='.$id);
-		}
-		catch(Exception $e) {
+			redirect('index.php?p=103&id=' . $id);
+		} catch (Exception $e) {
 			// Redirect to Exception page
-			redirect('index.php?p=102&e='.$e->getMessage());
+			redirect('index.php?p=102&e=' . $e->getMessage());
 		}
 	}
 
@@ -442,7 +447,8 @@ class D {
 	 * QuickEditUserBadges
 	 * Redirects to the edit user badges page for the user with $_POST["u"] username
 	*/
-	public static function QuickEditUserBadges() {
+	public static function QuickEditUserBadges()
+	{
 		try {
 			// Check if everything is set
 			if (empty($_POST['u'])) {
@@ -455,11 +461,10 @@ class D {
 				throw new Exception("That user doesn't exist");
 			}
 			// Done, redirect to edit page
-			redirect('index.php?p=110&id='.$id);
-		}
-		catch(Exception $e) {
+			redirect('index.php?p=110&id=' . $id);
+		} catch (Exception $e) {
 			// Redirect to Exception page
-			redirect('index.php?p=108&e='.$e->getMessage());
+			redirect('index.php?p=108&e=' . $e->getMessage());
 		}
 	}
 
@@ -467,7 +472,8 @@ class D {
 	 * ChangeIdentity
 	 * Change identity function (ADMIN CP)
 	*/
-	public static function ChangeIdentity() {
+	public static function ChangeIdentity()
+	{
 		try {
 			// Check if everything is set
 			if (!isset($_POST['id']) || !isset($_POST['oldu']) || !isset($_POST['newu']) || empty($_POST['id']) || empty($_POST['oldu']) || empty($_POST['newu'])) {
@@ -479,7 +485,7 @@ class D {
 				throw new Exception("User doesn't exist");
 			}
 			$privileges = current($privileges);
-			if ( (($privileges & Privileges::AdminManageUsers) > 0) && $_POST['oldu'] != $_SESSION['username']) {
+			if ((($privileges & Privileges::AdminManageUsers) > 0) && $_POST['oldu'] != $_SESSION['username']) {
 				throw new Exception("You don't have enough permissions to edit this user");
 			}
 			// No username with mixed spaces
@@ -500,10 +506,9 @@ class D {
 			rapLog(sprintf("has changed %s's username to %s", $_POST["oldu"], $_POST["newu"]));
 			// Done, redirect to success page
 			redirect('index.php?p=102&s=User identity changed! It might take a while to change the username if the user is online on Bancho.');
-		}
-		catch(Exception $e) {
+		} catch (Exception $e) {
 			// Redirect to Exception page
-			redirect('index.php?p=102&e='.$e->getMessage());
+			redirect('index.php?p=102&e=' . $e->getMessage());
 		}
 	}
 
@@ -511,7 +516,8 @@ class D {
 	 * SaveBadge
 	 * Save badge function (ADMIN CP)
 	*/
-	public static function SaveBadge() {
+	public static function SaveBadge()
+	{
 		try {
 			// Check if everything is set
 			if (!isset($_POST['id']) || !isset($_POST['n']) || !isset($_POST['i']) || empty($_POST['n']) || empty($_POST['i'])) {
@@ -527,10 +533,9 @@ class D {
 			rapLog(sprintf("has %s badge %s", $_POST['id'] == 0 ? "created" : "edited", $_POST["n"]));
 			// Done, redirect to success page
 			redirect('index.php?p=108&s=Badge edited!');
-		}
-		catch(Exception $e) {
+		} catch (Exception $e) {
 			// Redirect to Exception page
-			redirect('index.php?p=108&e='.$e->getMessage());
+			redirect('index.php?p=108&e=' . $e->getMessage());
 		}
 	}
 
@@ -538,7 +543,8 @@ class D {
 	 * SaveUserBadges
 	 * Save user badges function (ADMIN CP)
 	*/
-	public static function SaveUserBadges() {
+	public static function SaveUserBadges()
+	{
 		try {
 			// Check if everything is set
 			if (!isset($_POST['u']) || !isset($_POST['b01']) || !isset($_POST['b02']) || !isset($_POST['b03']) || !isset($_POST['b04']) || !isset($_POST['b05']) || !isset($_POST['b06']) || empty($_POST['u'])) {
@@ -561,10 +567,9 @@ class D {
 			rapLog(sprintf("has edited %s's badges", $_POST["u"]));
 			// Done, redirect to success page
 			redirect('index.php?p=108&s=Badge edited!');
-		}
-		catch(Exception $e) {
+		} catch (Exception $e) {
 			// Redirect to Exception page
-			redirect('index.php?p=108&e='.$e->getMessage());
+			redirect('index.php?p=108&e=' . $e->getMessage());
 		}
 	}
 
@@ -572,7 +577,8 @@ class D {
 	 * RemoveBadge
 	 * Remove badge function (ADMIN CP)
 	*/
-	public static function RemoveBadge() {
+	public static function RemoveBadge()
+	{
 		try {
 			// Make sure that this is not the "None badge"
 			if (empty($_GET['id'])) {
@@ -592,10 +598,9 @@ class D {
 			rapLog(sprintf("has deleted badge %s", current($name)));
 			// Done, redirect to success page
 			redirect('index.php?p=108&s=Badge deleted!');
-		}
-		catch(Exception $e) {
+		} catch (Exception $e) {
 			// Redirect to Exception page
-			redirect('index.php?p=108&e='.$e->getMessage());
+			redirect('index.php?p=108&e=' . $e->getMessage());
 		}
 	}
 
@@ -603,7 +608,8 @@ class D {
 	 * SilenceUser
 	 * Silence someone (ADMIN CP)
 	*/
-	public static function silenceUser() {
+	public static function silenceUser()
+	{
 		try {
 			// Check if everything is set
 			if (!isset($_POST['u']) || !isset($_POST['c']) || !isset($_POST['un']) || !isset($_POST['r']) || !isset($_POST["r"]) || empty($_POST['u']) || empty($_POST['un']) || empty($_POST["r"])) {
@@ -633,17 +639,16 @@ class D {
 				$msg = 'index.php?p=102&s=User silence removed!';
 			}
 			if (isset($_POST["resend"])) {
-				redirect(stripSuccessError($_SERVER["HTTP_REFERER"]) . '&s='.$msg);
+				redirect(stripSuccessError($_SERVER["HTTP_REFERER"]) . '&s=' . $msg);
 			} else {
-				redirect('index.php?p=102&s='.$msg);
+				redirect('index.php?p=102&s=' . $msg);
 			}
-		}
-		catch(Exception $e) {
+		} catch (Exception $e) {
 			// Redirect to Exception page
 			if (isset($_POST["resend"])) {
-				redirect(stripSuccessError($_SERVER["HTTP_REFERER"]) . '&e='.$e->getMessage());
+				redirect(stripSuccessError($_SERVER["HTTP_REFERER"]) . '&e=' . $e->getMessage());
 			} else {
-				redirect('index.php?p=102&e='.$e->getMessage());
+				redirect('index.php?p=102&e=' . $e->getMessage());
 			}
 		}
 	}
@@ -652,7 +657,8 @@ class D {
 	 * KickUser
 	 * Kick someone from bancho (ADMIN CP)
 	*/
-	public static function KickUser() {
+	public static function KickUser()
+	{
 		try {
 			// Check if everything is set
 			if (!isset($_POST['u']) || empty($_POST['u']) || !isset($_POST["r"]) || empty($_POST["r"])) {
@@ -672,10 +678,9 @@ class D {
 			]));
 			// Done, redirect to success page
 			redirect('index.php?p=102&s=User kicked!');
-		}
-		catch(Exception $e) {
+		} catch (Exception $e) {
 			// Redirect to Exception page
-			redirect('index.php?p=102&e='.$e->getMessage());
+			redirect('index.php?p=102&e=' . $e->getMessage());
 		}
 	}
 
@@ -683,14 +688,15 @@ class D {
 	 * ResetAvatar
 	 * Reset soneone's avatar (ADMIN CP)
 	*/
-	public static function ResetAvatar() {
+	public static function ResetAvatar()
+	{
 		try {
 			// Check if everything is set
 			if (!isset($_GET['id']) || empty($_GET['id'])) {
 				throw new Exception('Invalid request');
 			}
 			// Get user id
-			$avatar = dirname(dirname(dirname(__FILE__))).'/avatars/'.$_GET['id'].'.png';
+			$avatar = dirname(dirname(dirname(__FILE__))) . '/avatars/' . $_GET['id'] . '.png';
 			if (!file_exists($avatar)) {
 				throw new Exception("That user doesn't have an avatar");
 			}
@@ -700,10 +706,9 @@ class D {
 			rapLog(sprintf("has reset %s's avatar", getUserUsername($_GET['id'])));
 			// Done, redirect to success page
 			redirect('index.php?p=102&s=Avatar reset!');
-		}
-		catch(Exception $e) {
+		} catch (Exception $e) {
 			// Redirect to Exception page
-			redirect('index.php?p=102&e='.$e->getMessage());
+			redirect('index.php?p=102&e=' . $e->getMessage());
 		}
 	}
 
@@ -711,7 +716,8 @@ class D {
 	 * Logout
 	 * Logout and return to home
 	*/
-	public static function Logout() {
+	public static function Logout()
+	{
 		// Logging out without being logged in doesn't make much sense
 		if (checkLoggedIn()) {
 			startSessionIfNotStarted();
@@ -732,7 +738,8 @@ class D {
 	 * ForgetEveryCookie
 	 * Allows the user to delete every field in the remember database table with their username, so that it is logged out of every computer they were logged in.
 	*/
-	public static function ForgetEveryCookie() {
+	public static function ForgetEveryCookie()
+	{
 		startSessionIfNotStarted();
 		$rch = new RememberCookieHandler();
 		$rch->DestroyAll($_SESSION['userid']);
@@ -743,10 +750,12 @@ class D {
 	 * saveUserSettings
 	 * Save user settings functions
 	*/
-	public static function saveUserSettings() {
+	public static function saveUserSettings()
+	{
 		global $PlayStyleEnum;
 		try {
-			function valid($value, $min=0, $max=1) {
+			function valid($value, $min = 0, $max = 1)
+			{
 				return ($value >= $min && $value <= $max);
 			}
 
@@ -793,7 +802,7 @@ class D {
 				// (is this even needed...?)
 				$forbiddenClasses = ["fa-lg", "fa-2x", "fa-3x", "fa-4x", "fa-5x", "fa-ul", "fa-li", "fa-border", "fa-pull-right", "fa-pull-left", "fa-stack", "fa-stack-2x", "fa-stack-1x"];
 				$icon = explode(" ", $_POST["badgeIcon"]);
-				for ($i=0; $i < count($icon); $i++) {
+				for ($i = 0; $i < count($icon); $i++) {
 					if (substr($icon[$i], 0, 3) != "fa-" || in_array($icon[$i], $forbiddenClasses)) {
 						$icon[$i] = "";
 					}
@@ -807,10 +816,9 @@ class D {
 			updateSafeTitle();
 			// Done, redirect to success page
 			redirect('index.php?p=6&s=ok');
-		}
-		catch(Exception $e) {
+		} catch (Exception $e) {
 			// Redirect to Exception page
-			redirect('index.php?p=6&e='.$e->getMessage());
+			redirect('index.php?p=6&e=' . $e->getMessage());
 		}
 	}
 
@@ -818,7 +826,8 @@ class D {
 	 * WipeAccount
 	 * Wipes an account
 	*/
-	public static function WipeAccount() {
+	public static function WipeAccount()
+	{
 		try {
 			if (!isset($_POST['id']) || empty($_POST['id'])) {
 				throw new Exception('Invalid request');
@@ -829,7 +838,7 @@ class D {
 			}
 			$username = $userData["username"];
 			// Check if we can wipe this user
-			if ( ($userData["privileges"] & Privileges::AdminManageUsers) > 0) {
+			if (($userData["privileges"] & Privileges::AdminManageUsers) > 0) {
 				throw new Exception("You don't have enough permissions to wipe this account");
 			}
 
@@ -859,7 +868,7 @@ class D {
 			}
 			// Reset mode stats
 			foreach ($modes as $k) {
-				$GLOBALS['db']->execute('UPDATE users_stats SET ranked_score_'.$k.' = 0, total_score_'.$k.' = 0, replays_watched_'.$k.' = 0, playcount_'.$k.' = 0, avg_accuracy_'.$k.' = 0.0, total_hits_'.$k.' = 0, level_'.$k.' = 0, pp_'.$k.' = 0 WHERE id = ? LIMIT 1', [$_POST['id']]);
+				$GLOBALS['db']->execute('UPDATE users_stats SET ranked_score_' . $k . ' = 0, total_score_' . $k . ' = 0, replays_watched_' . $k . ' = 0, playcount_' . $k . ' = 0, avg_accuracy_' . $k . ' = 0.0, total_hits_' . $k . ' = 0, level_' . $k . ' = 0, pp_' . $k . ' = 0 WHERE id = ? LIMIT 1', [$_POST['id']]);
 			}
 
 			// RAP log
@@ -867,9 +876,8 @@ class D {
 
 			// Done
 			redirect('index.php?p=102&s=User scores and stats have been wiped!');
-		}
-		catch(Exception $e) {
-			redirect('index.php?p=102&e='.$e->getMessage());
+		} catch (Exception $e) {
+			redirect('index.php?p=102&e=' . $e->getMessage());
 		}
 	}
 
@@ -877,7 +885,8 @@ class D {
 	 * AddRemoveFriend
 	 * Add remove friends
 	*/
-	public static function AddRemoveFriend() {
+	public static function AddRemoveFriend()
+	{
 		try {
 			// Check if we are logged in
 			sessionCheck();
@@ -894,18 +903,18 @@ class D {
 				removeFriend($uid, $_GET['u'], true);
 			}
 			// Done, redirect
-			redirect('index.php?u='.$_GET['u']);
-		}
-		catch(Exception $e) {
-			redirect('index.php?p=99&e='.$e->getMessage());
+			redirect('index.php?u=' . $_GET['u']);
+		} catch (Exception $e) {
+			redirect('index.php?p=99&e=' . $e->getMessage());
 		}
 	}
-	
+
 	/*
 	 * ProcessRankRequest
 	 * Rank/unrank a beatmap
 	*/
-	public static function ProcessRankRequest() {
+	public static function ProcessRankRequest()
+	{
 		global $URL;
 		global $ScoresConfig;
 		try {
@@ -955,9 +964,8 @@ class D {
 
 			// Done
 			redirect("index.php?p=117&s=野生のちんちんが現れる");
-		}
-		catch(Exception $e) {
-			redirect("index.php?p=117&e=".$e->getMessage());
+		} catch (Exception $e) {
+			redirect("index.php?p=117&e=" . $e->getMessage());
 		}
 	}
 
@@ -966,7 +974,8 @@ class D {
 	 * BlacklistRankRequest
 	 * Toggle blacklist for a rank request
 	*/
-	public static function BlacklistRankRequest() {
+	public static function BlacklistRankRequest()
+	{
 		try {
 			if (!isset($_GET["id"]) || empty($_GET["id"]))
 				throw new Exception("no");
@@ -974,13 +983,13 @@ class D {
 			$reqData = $GLOBALS["db"]->fetch("SELECT type, bid FROM rank_requests WHERE id = ? LIMIT 1", [$_GET["id"]]);
 			rapLog(sprintf("has toggled blacklist flag on beatmap %s %s", $reqData["type"] == "s" ? "set" : "", $reqData["bid"]), $_SESSION["userid"]);
 			redirect("index.php?p=117&s=Blacklisted flag changed");
-		}
-		catch(Exception $e) {
-			redirect('index.php?p=117&e='.$e->getMessage());
+		} catch (Exception $e) {
+			redirect('index.php?p=117&e=' . $e->getMessage());
 		}
 	}
 
-	public static function savePrivilegeGroup() {
+	public static function savePrivilegeGroup()
+	{
 		try {
 			// Args check
 			if (!isset($_POST["id"]) || !isset($_POST["n"]) || !isset($_POST["priv"]) || !isset($_POST["c"]))
@@ -1007,12 +1016,12 @@ class D {
 				$GLOBALS["db"]->execute("UPDATE privileges_groups SET name = ?, privileges = ?, color = ? WHERE id = ? LIMIT 1", [$_POST["n"], $_POST["priv"], $_POST["c"], $_POST["id"]]);
 				// Get users in this group
 				// I genuinely want to kill myself right now.
-				$users = $GLOBALS["db"]->fetchAll("SELECT id FROM users WHERE privileges = ".$oldPriv." OR privileges = ".$oldPriv." | ".Privileges::UserDonor);
+				$users = $GLOBALS["db"]->fetchAll("SELECT id FROM users WHERE privileges = " . $oldPriv . " OR privileges = " . $oldPriv . " | " . Privileges::UserDonor);
 				foreach ($users as $user) {
 					// Remove privileges from previous group
-					$GLOBALS["db"]->execute("UPDATE users SET privileges = privileges & ~".$oldPriv." WHERE id = ? LIMIT 1", [$user["id"]]);
+					$GLOBALS["db"]->execute("UPDATE users SET privileges = privileges & ~" . $oldPriv . " WHERE id = ? LIMIT 1", [$user["id"]]);
 					// Add privileges from new group
-					$GLOBALS["db"]->execute("UPDATE users SET privileges = privileges | ".$_POST["priv"]." WHERE id = ? LIMIT 1", [$user["id"]]);
+					$GLOBALS["db"]->execute("UPDATE users SET privileges = privileges | " . $_POST["priv"] . " WHERE id = ? LIMIT 1", [$user["id"]]);
 				}
 			}
 
@@ -1020,7 +1029,7 @@ class D {
 			redirect("index.php?p=118&s=Saved!");
 		} catch (Exception $e) {
 			// There's a memino divertentino
-			redirect("index.php?p=118&e=".$e->getMessage());
+			redirect("index.php?p=118&e=" . $e->getMessage());
 		}
 	}
 
@@ -1029,7 +1038,8 @@ class D {
 	 * RestrictUnrestrictUser
 	 * restricte/unrestrict user function (ADMIN CP)
 	*/
-	public static function RestrictUnrestrictUser() {
+	public static function RestrictUnrestrictUser()
+	{
 		try {
 			// Check if everything is set
 			if (empty($_GET['id'])) {
@@ -1041,7 +1051,7 @@ class D {
 				throw new Exception("User doesn't exist");
 			}
 			// Check if we can ban this user
-			if ( ($userData["privileges"] & Privileges::AdminManageUsers) > 0) {
+			if (($userData["privileges"] & Privileges::AdminManageUsers) > 0) {
 				throw new Exception("You don't have enough permissions to ban this user");
 			}
 			// Get new allowed value
@@ -1068,31 +1078,31 @@ class D {
 			} else {
 				redirect('index.php?p=102&s=User restricted/unrestricted!');
 			}
-		}
-		catch(Exception $e) {
+		} catch (Exception $e) {
 			// Redirect to Exception page
 			if (isset($_GET["resend"])) {
-				redirect(stripSuccessError($_SERVER["HTTP_REFERER"]) . '&e='.$e->getMessage());
+				redirect(stripSuccessError($_SERVER["HTTP_REFERER"]) . '&e=' . $e->getMessage());
 			} else {
-				redirect('index.php?p=102&e='.$e->getMessage());
+				redirect('index.php?p=102&e=' . $e->getMessage());
 			}
 		}
 	}
 
-	public static function GiveDonor() {
+	public static function GiveDonor()
+	{
 		try {
 			if (!isset($_POST["id"]) || empty($_POST["id"]) || !isset($_POST["m"]) || empty($_POST["m"]))
 				throw new Exception("Invalid user");
 			$months = giveDonor($_POST["id"], $_POST["m"], $_POST["type"] == 0);
 			rapLog(sprintf("has given donor for %s months to user %s", $_POST["m"], $username), $_SESSION["userid"]);
-			redirect("index.php?p=102&s=Donor status changed. Donor for that user now expires in ".$months." months!");
-		}
-		catch(Exception $e) {
-			redirect('index.php?p=102&e='.$e->getMessage());
+			redirect("index.php?p=102&s=Donor status changed. Donor for that user now expires in " . $months . " months!");
+		} catch (Exception $e) {
+			redirect('index.php?p=102&e=' . $e->getMessage());
 		}
 	}
 
-	public static function RemoveDonor() {
+	public static function RemoveDonor()
+	{
 		try {
 			if (!isset($_GET["id"]) || empty($_GET["id"]))
 				throw new Exception("Invalid user");
@@ -1101,7 +1111,7 @@ class D {
 				throw new Exception("That user doesn't exist");
 			}
 			$username = current($username);
-			$GLOBALS["db"]->execute("UPDATE users SET privileges = privileges & ~".Privileges::UserDonor.", donor_expire = 0 WHERE id = ? LIMIT 1", [$_GET["id"]]);
+			$GLOBALS["db"]->execute("UPDATE users SET privileges = privileges & ~" . Privileges::UserDonor . ", donor_expire = 0 WHERE id = ? LIMIT 1", [$_GET["id"]]);
 
 			// Remove donor badge
 			// 14 = donor badge id
@@ -1109,13 +1119,13 @@ class D {
 
 			rapLog(sprintf("has removed donor from user %s", $username), $_SESSION["userid"]);
 			redirect("index.php?p=102&s=Donor status changed!");
-		}
-		catch(Exception $e) {
-			redirect('index.php?p=102&e='.$e->getMessage());
+		} catch (Exception $e) {
+			redirect('index.php?p=102&e=' . $e->getMessage());
 		}
 	}
 
-	public static function Rollback() {
+	public static function Rollback()
+	{
 		try {
 			if (!isset($_POST["id"]) || empty($_POST["id"]))
 				throw new Exception("Invalid user");
@@ -1125,19 +1135,31 @@ class D {
 			}
 			$username = $userData["username"];
 			// Check if we can rollback this user
-			if ( ($userData["privileges"] & Privileges::AdminManageUsers) > 0) {
+			if (($userData["privileges"] & Privileges::AdminManageUsers) > 0) {
 				throw new Exception("You don't have enough permissions to rollback this account");
 			}
 			switch ($_POST["period"]) {
-				case "d": $periodSeconds = 86400; $periodName = "Day"; break;
-				case "w": $periodSeconds = 86400*7; $periodName = "Week"; break;
-				case "m": $periodSeconds = 86400*30; $periodName = "Month"; break;
-				case "y": $periodSeconds = 86400*365; $periodName = "Year"; break;
+				case "d":
+					$periodSeconds = 86400;
+					$periodName = "Day";
+					break;
+				case "w":
+					$periodSeconds = 86400 * 7;
+					$periodName = "Week";
+					break;
+				case "m":
+					$periodSeconds = 86400 * 30;
+					$periodName = "Month";
+					break;
+				case "y":
+					$periodSeconds = 86400 * 365;
+					$periodName = "Year";
+					break;
 			}
 
 			//$removeAfterOsuTime = UNIXTimestampToOsuDate(time()-($_POST["length"]*$periodSeconds));
-			$removeAfter = time()-($_POST["length"]*$periodSeconds);
-			$rollbackString = $_POST["length"]." ".$periodName;
+			$removeAfter = time() - ($_POST["length"] * $periodSeconds);
+			$rollbackString = $_POST["length"] . " " . $periodName;
 			if ($_POST["length"] > 1) {
 				$rollbackString .= "s";
 			}
@@ -1147,12 +1169,13 @@ class D {
 
 			rapLog(sprintf("has rolled back %s %s's account", $rollbackString, $username), $_SESSION["userid"]);
 			redirect("index.php?p=102&s=User account has been rolled back!");
-		} catch(Exception $e) {
-			redirect('index.php?p=102&e='.$e->getMessage());
+		} catch (Exception $e) {
+			redirect('index.php?p=102&e=' . $e->getMessage());
 		}
 	}
 
-	public static function ToggleCustomBadge() {
+	public static function ToggleCustomBadge()
+	{
 		try {
 			if (!isset($_GET["id"]) || empty($_GET["id"]))
 				throw new Exception("Invalid user");
@@ -1162,7 +1185,7 @@ class D {
 			}
 			$username = $userData["username"];
 			// Check if we can edit this user
-			if ( ($userData["privileges"] & Privileges::AdminManageUsers) > 0) {
+			if (($userData["privileges"] & Privileges::AdminManageUsers) > 0) {
 				throw new Exception("You don't have enough permissions to grant/revoke custom badge privilege on this account");
 			}
 
@@ -1174,13 +1197,14 @@ class D {
 
 			rapLog(sprintf("has %s custom badge privilege on %s's account", $grantRevoke, $username), $_SESSION["userid"]);
 			redirect("index.php?p=102&s=Custom badge privilege revoked/granted!");
-		} catch(Exception $e) {
-			redirect('index.php?p=102&e='.$e->getMessage());
+		} catch (Exception $e) {
+			redirect('index.php?p=102&e=' . $e->getMessage());
 		}
 	}
 
 
-	public static function lockUnlockUser() {
+	public static function lockUnlockUser()
+	{
 		try {
 			if (!isset($_GET["id"]) || empty($_GET["id"]))
 				throw new Exception("Invalid user");
@@ -1189,7 +1213,7 @@ class D {
 				throw new Exception("That user doesn't exist");
 			}
 			// Check if we can edit this user
-			if ( ($userData["privileges"] & Privileges::AdminManageUsers) > 0) {
+			if (($userData["privileges"] & Privileges::AdminManageUsers) > 0) {
 				throw new Exception("You don't have enough permissions to lock this account");
 			}
 			// Make sure the user is not banned/restricted
@@ -1202,12 +1226,13 @@ class D {
 			$GLOBALS["db"]->execute("UPDATE users SET privileges = privileges ^ 2 WHERE id = ? LIMIT 1", [$_GET["id"]]);
 			rapLog(sprintf("has %s %s's account", $grantRevoke, $userData["username"]), $_SESSION["userid"]);
 			redirect("index.php?p=102&s=User locked/unlocked!");
-		} catch(Exception $e) {
-			redirect('index.php?p=102&e='.$e->getMessage());
+		} catch (Exception $e) {
+			redirect('index.php?p=102&e=' . $e->getMessage());
 		}
 	}
 
-	public static function RankBeatmapNew() {
+	public static function RankBeatmapNew()
+	{
 		global $URL;
 		global $ScoresConfig;
 		try {
@@ -1234,7 +1259,7 @@ class D {
 
 				// Change beatmap status
 				switch ($status) {
-					// Rank beatmap
+						// Rank beatmap
 					case "rank":
 						$GLOBALS["db"]->execute("UPDATE beatmaps SET ranked = 2, ranked_status_freezed = 1 WHERE beatmap_id = ? LIMIT 1", [$beatmapID]);
 
@@ -1242,9 +1267,9 @@ class D {
 						$GLOBALS["db"]->execute("UPDATE scores s JOIN (SELECT userid, MAX(score) maxscore FROM scores JOIN beatmaps ON scores.beatmap_md5 = beatmaps.beatmap_md5 WHERE beatmaps.beatmap_md5 = (SELECT beatmap_md5 FROM beatmaps WHERE beatmap_id = ? LIMIT 1) GROUP BY userid) s2 ON s.score = s2.maxscore AND s.userid = s2.userid SET completed = 3", [$beatmapID]);
 						$result .= "$beatmapID has been ranked and its scores have been restored. | ";
 						$rap .= "ranked";
-					break;
-						
-					// Love beatmap (INCASE THE BEATMAP IS TOO MUCH PP)
+						break;
+
+						// Love beatmap (INCASE THE BEATMAP IS TOO MUCH PP)
 					case "love":
 						$GLOBALS["db"]->execute("UPDATE beatmaps SET ranked = 5, ranked_status_freezed = 1 WHERE beatmap_id = ? LIMIT 1", [$beatmapID]);
 
@@ -1252,9 +1277,9 @@ class D {
 						$GLOBALS["db"]->execute("UPDATE scores s JOIN (SELECT userid, MAX(score) maxscore FROM scores JOIN beatmaps ON scores.beatmap_md5 = beatmaps.beatmap_md5 WHERE beatmaps.beatmap_md5 = (SELECT beatmap_md5 FROM beatmaps WHERE beatmap_id = ? LIMIT 1) GROUP BY userid) s2 ON s.score = s2.maxscore AND s.userid = s2.userid SET completed = 3", [$beatmapID]);
 						$result .= "$beatmapID has been loved and its scores have been restored. | ";
 						$rap .= "loved";
-					break;
+						break;
 
-					// Unrank beatmap (INCASE ITS TOO BAD TO PLAY)
+						// Unrank beatmap (INCASE ITS TOO BAD TO PLAY)
 					case "unrank":
 						$GLOBALS["db"]->execute("UPDATE beatmaps SET ranked = 0, ranked_status_freezed = 1 WHERE beatmap_id = ? LIMIT 1", [$beatmapID]);
 
@@ -1262,27 +1287,27 @@ class D {
 						$GLOBALS["db"]->execute("UPDATE scores s JOIN (SELECT userid, MAX(score) maxscore FROM scores JOIN beatmaps ON scores.beatmap_md5 = beatmaps.beatmap_md5 WHERE beatmaps.beatmap_md5 = (SELECT beatmap_md5 FROM beatmaps WHERE beatmap_id = ? LIMIT 1) GROUP BY userid) s2 ON s.score = s2.maxscore AND s.userid = s2.userid SET completed = 2", [$beatmapID]);
 						$result .= "$beatmapID has been ranked and its scores have been mark as old scores. | ";
 						$rap .= "unranked";
-					break;
+						break;
 
-					// Force osu!api update (unfreeze)
+						// Force osu!api update (unfreeze)
 					case "update":
 						$updateCache = true;
 						$GLOBALS["db"]->execute("UPDATE beatmaps SET ranked = 0, ranked_status_freezed = 0 WHERE beatmap_id = ? LIMIT 1", [$beatmapID]);
 						$result .= "$beatmapID's ranked status is the same from official osu!. | ";
 						$rap .= "updated status from bancho for";
-					break;
+						break;
 
-					// No changes
+						// No changes
 					case "no":
 						$logToRap = false;
 						$result .= "$beatmapID's ranked status has not been edited!. | ";
 						$rap .= "nothing to do with";
-					break;
+						break;
 
-					// EH! VOLEVI!
+						// EH! VOLEVI!
 					default:
 						throw new Exception("Unknown ranked status value.");
-					break;
+						break;
 				}
 
 				// RAP Log
@@ -1294,7 +1319,7 @@ class D {
 			// at least one diff has been unfrozen
 			global $URL;
 			if ($updateCache) {
-				post_content_http($URL["scores"]."/api/v1/cacheBeatmap", [
+				post_content_http($URL["scores"] . "/api/v1/cacheBeatmap", [
 					"sid" => $bsid,
 					"refresh" => 1
 				], 30);
@@ -1322,13 +1347,14 @@ class D {
 			}
 
 			// Done
-			redirect("index.php?p=117&s=".$result);
+			redirect("index.php?p=117&s=" . $result);
 		} catch (Exception $e) {
-			redirect('index.php?p=117&e='.$e->getMessage());
+			redirect('index.php?p=117&e=' . $e->getMessage());
 		}
 	}
 
-	public static function RedirectRankBeatmap() {
+	public static function RedirectRankBeatmap()
+	{
 		try {
 			if (!isset($_POST["id"]) || empty($_POST["id"]) || !isset($_POST["type"]) || empty($_POST["type"])) {
 				throw new Exception("Invalid beatmap id or type");
@@ -1342,13 +1368,14 @@ class D {
 				}
 				$bsid = current($bsid);
 			}
-			redirect("index.php?p=124&bsid=".$bsid);
+			redirect("index.php?p=124&bsid=" . $bsid);
 		} catch (Exception $e) {
-			redirect('index.php?p=125&e='.$e->getMessage());
+			redirect('index.php?p=125&e=' . $e->getMessage());
 		}
 	}
 
-	public static function ClearHWIDMatches() {
+	public static function ClearHWIDMatches()
+	{
 		try {
 			if (!isset($_GET["id"]) || empty($_GET["id"])) {
 				throw new Exception("Invalid user ID");
@@ -1357,11 +1384,12 @@ class D {
 			rapLog(sprintf("has cleared %s's HWID matches.", getUserUsername($_GET["id"])));
 			redirect('index.php?p=102&s=HWID matches cleared! Make sure to clear multiaccounts\' HWID too, or the user might get restricted for multiaccounting!');
 		} catch (Exception $e) {
-			redirect('index.php?p=102&e='.$e->getMessage());
+			redirect('index.php?p=102&e=' . $e->getMessage());
 		}
 	}
 
-	public static function TakeReport() {
+	public static function TakeReport()
+	{
 		try {
 			if (!isset($_GET["id"]) || empty($_GET["id"])) {
 				throw new Exception("Missing report id");
@@ -1385,7 +1413,8 @@ class D {
 		}
 	}
 
-	public static function SolveUnsolveReport() {
+	public static function SolveUnsolveReport()
+	{
 		try {
 			if (!isset($_GET["id"]) || empty($_GET["id"])) {
 				throw new Exception("Missing report id");
@@ -1410,7 +1439,8 @@ class D {
 		}
 	}
 
-	public static function UselessUsefulReport() {
+	public static function UselessUsefulReport()
+	{
 		try {
 			if (!isset($_GET["id"]) || empty($_GET["id"])) {
 				throw new Exception("Missing report id");
@@ -1435,7 +1465,8 @@ class D {
 		}
 	}
 
-	public static function RestoreScoresSearchUser() {
+	public static function RestoreScoresSearchUser()
+	{
 		try {
 			if (!isset($_POST["username"]) || empty($_POST["username"])) {
 				throw new Exception("Missing username");
@@ -1450,7 +1481,8 @@ class D {
 		}
 	}
 
-	public static function RestoreScores() {
+	public static function RestoreScores()
+	{
 		try {
 			if (!isset($_POST["userid"]) || empty($_POST["userid"]) || !isset($_POST["gm"]) || empty($_POST["gm"])) {
 				throw new Exception("Missing required parameters");
@@ -1506,7 +1538,8 @@ class D {
 		}
 	}
 
-	public static function UploadMainMenuIcon() {
+	public static function UploadMainMenuIcon()
+	{
 		try {
 			if (!isset($_POST["name"]) || empty($_POST["name"]) || !isset($_POST["url"]) || empty($_POST["url"])) {
 				throw new Exception("Missing required parameter(s).");
@@ -1525,7 +1558,7 @@ class D {
 				throw new Exception("File upload failed. Check server's permissions.");
 			}
 			$defaultCount = current($GLOBALS["db"]->fetch("SELECT COUNT(*) FROM main_menu_icons WHERE is_default = 1"));
-			$GLOBALS["db"]->execute("INSERT INTO main_menu_icons (name, file_id, url, is_default) VALUES (?, ?, ?, ?)", [$_POST["name"], $fileName, $_POST["url"], (int)($defaultCount == 0)]);
+			$GLOBALS["db"]->execute("INSERT INTO main_menu_icons (name, file_id, url, is_default) VALUES (?, ?, ?, ?)", [$_POST["name"], $fileName, $_POST["url"], (int) ($defaultCount == 0)]);
 			$msg = "Main menu icon uploaded successfully";
 			$msg .= $defaultCount == 0 ? " and set as default image." : "!";
 			redirect("index.php?p=111&s=" . $msg);
@@ -1534,7 +1567,8 @@ class D {
 		}
 	}
 
-	public static function DeleteMainMenuIcon() {
+	public static function DeleteMainMenuIcon()
+	{
 		try {
 			if (!isset($_GET["id"]) || empty($_GET["id"])) {
 				throw new Exception("Missing required parameter");
@@ -1552,7 +1586,8 @@ class D {
 		}
 	}
 
-	public static function SetDefaultMainMenuIcon() {
+	public static function SetDefaultMainMenuIcon()
+	{
 		try {
 			if (!isset($_GET["id"]) || empty($_GET["id"])) {
 				throw new Exception("Missing required parameter");
@@ -1564,7 +1599,8 @@ class D {
 		}
 	}
 
-	public static function SetMainMenuIcon() {
+	public static function SetMainMenuIcon()
+	{
 		try {
 			if (!isset($_GET["id"]) || empty($_GET["id"])) {
 				throw new Exception("Missing required parameter");
@@ -1577,7 +1613,8 @@ class D {
 		}
 	}
 
-	public static function TestMainMenuIcon() {
+	public static function TestMainMenuIcon()
+	{
 		try {
 			if (!isset($_GET["id"]) || empty($_GET["id"])) {
 				throw new Exception("Missing required parameter");
@@ -1592,7 +1629,8 @@ class D {
 		}
 	}
 
-	public static function RestoreMainMenuIcon() {
+	public static function RestoreMainMenuIcon()
+	{
 		try {
 			$GLOBALS["db"]->execute("UPDATE main_menu_icons SET is_current = IF((SELECT id FROM (SELECT * FROM main_menu_icons) AS x WHERE x.is_default = 1 AND x.id = main_menu_icons.id LIMIT 1), 1, 0)", [$_GET["id"]]);
 			updateMainMenuIconBancho();
@@ -1602,7 +1640,8 @@ class D {
 		}
 	}
 
-	public static function RemoveMainMenuIcon() {
+	public static function RemoveMainMenuIcon()
+	{
 		try {
 			$GLOBALS["db"]->execute("UPDATE main_menu_icons SET is_current = 0", [$_GET["id"]]);
 			updateMainMenuIconBancho();
@@ -1612,7 +1651,8 @@ class D {
 		}
 	}
 
-	public static function BulkBan() {
+	public static function BulkBan()
+	{
 		try {
 			if (!isset($_POST["uid"]) || empty($_POST["uid"])) {
 				throw new Exception("No user ids provided.");
@@ -1620,7 +1660,7 @@ class D {
 			$result = "";
 			$errors = "";
 			foreach ($_POST["uid"] as $uid) {
-				$uid = (int)$uid;
+				$uid = (int) $uid;
 				$user = $GLOBALS["db"]->fetch("SELECT privileges, username FROM users WHERE id = ? LIMIT 1", [$uid]);
 				if (!$user) {
 					$errors .= "$uid doesn't exist | ";
@@ -1646,7 +1686,8 @@ class D {
 		}
 	}
 
-	public static function DeleteUser() {
+	public static function DeleteUser()
+	{
 		try {
 			if (!isset($_POST["id"]) || empty($_POST["id"])) {
 				throw new Exception("No user ids provided.");
@@ -1765,7 +1806,7 @@ class D {
 
 			echo "Deleting avatar...   ";
 			try {
-				$avatar = dirname(dirname(dirname(__FILE__))).'/avatars/'.$_GET['id'].'.png';
+				$avatar = dirname(dirname(dirname(__FILE__))) . '/avatars/' . $_GET['id'] . '.png';
 				if (file_exists($avatar)) {
 					unlink($avatar);
 					echo 'OK';

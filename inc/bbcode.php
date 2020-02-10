@@ -1,4 +1,5 @@
 <?php
+
 /**
  * BBcode helper class.
  *
@@ -8,7 +9,8 @@
  * @copyright  (c) 2012
  * @license    GPL v3
  */
-class bbcode {
+class bbcode
+{
 	/**
 	 * This function parses BBcode tag to HTML code (XHTML transitional 1.0).
 	 *
@@ -21,7 +23,8 @@ class bbcode {
 	 *
 	 * @return string
 	 */
-	public static function tohtml($text, $advanced = false, $charset = 'utf-8') {
+	public static function tohtml($text, $advanced = false, $charset = 'utf-8')
+	{
 		//special chars
 		$text = htmlspecialchars($text, ENT_QUOTES, $charset);
 		/*
@@ -66,7 +69,8 @@ class bbcode {
 	 *
 	 * @param string $var
 	 */
-	public static function nl2br($var) {
+	public static function nl2br($var)
+	{
 		return str_replace(['\\r\\n', '\r\\n', 'r\\n', '\r\n', '\n', '\r'], '<br />', nl2br($var));
 	}
 
@@ -75,7 +79,8 @@ class bbcode {
 	 *
 	 * @param string $var
 	 */
-	public static function purify($var) {
+	public static function purify($var)
+	{
 		$config = HTMLPurifier_Config::createDefault();
 		$config->set('HTML.SafeIframe', true);
 		$config->set('URI.SafeIframeRegexp', '%^(https?:)?//(www\.youtube(?:-nocookie)?\.com/embed/)%');
@@ -92,7 +97,8 @@ class bbcode {
 	 *
 	 * @return string text cleaned
 	 */
-	public static function remove($text) {
+	public static function remove($text)
+	{
 		return strip_tags(str_replace(['[', ']'], ['<', '>'], $text));
 	}
 }

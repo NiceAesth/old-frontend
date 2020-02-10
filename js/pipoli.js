@@ -1,8 +1,8 @@
-$(document).ready(function() {
+$(document).ready(function () {
 	$("#pipoli").append("<div><i class='fa fa-circle-o-notch fa-spin fa-3x'></i></div><div>Loading Celeste Pipoli</div>");
-	$.get("https://status.ripple.moe/backend/status_data.php", function(data) { //TO-DO: Copy ripple's pipoli thinger lmao
+	$.get("https://status.ripple.moe/backend/status_data.php", function (data) { //TO-DO: Copy ripple's pipoli thinger lmao
 		$("#pipoli").html("");
-		for(var key in data) {
+		for (var key in data) {
 			if (!data.hasOwnProperty(key) || data[key].secondary) continue;
 			$("#pipoli").append(
 				`<div class="col-lg-3 col-md-4">

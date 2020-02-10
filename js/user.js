@@ -1,5 +1,5 @@
 
-$(document).ready(function() {
+$(document).ready(function () {
 	if (typeof UserID == "undefined" || typeof Mode == "undefined") {
 		return;
 	}
@@ -21,18 +21,18 @@ function getScores(type) {
 		l: 20,
 		p: currentPage[type],
 		mode: Mode,
-	}, function(data) {
+	}, function (data) {
 		if (data.code != 200) {
 			alert("Whoops! We had an error while trying to show scores for this user :( Please report this!");
 		}
 		var tb = $("#" + type + "-plays-table");
-		$.each(data.scores, function(k, v) {
+		$.each(data.scores, function (k, v) {
 			var sw = (type == "recent" ? "success" : "warning");
 			var u = "<tr>";
-			u +=  '<td class="' + sw + '">\
+			u += '<td class="' + sw + '">\
 						<p class="text-left">\
 							<img src="images/ranks/' + getRank(Mode, v.mods, v.accuracy, v.count_300, v.count_100, v.count_50, v.count_miss) + '.png"></img> \
-							'+ (v.beatmap === null ? "Unknown beatmap" :  v.beatmap.song_name) +'\
+							'+ (v.beatmap === null ? "Unknown beatmap" : v.beatmap.song_name) + '\
 							<b>' + getScoreMods(v.mods) + '</b> (' + v.accuracy.toFixed(2) + '%) <br>\
 							<small>' + timeSince(new Date(v.time)) + ' ago</small>\
 						</p></td>';
@@ -42,7 +42,7 @@ function getScores(type) {
 				u += "<span title='Score: " + addCommas(v.score) + "'>" + addCommas(v.pp.toFixed(2)) + "pp</span>";
 				if (type == "best") {
 					var perc = Math.pow(0.95, bestIndex);
-					var wpp  = v.pp * perc;
+					var wpp = v.pp * perc;
 					small = "<small>weighted " + Math.round(perc * 100) + "% (" + addCommas(Math.round(wpp)) + " pp)</small>";
 					bestIndex++;
 				}
@@ -62,7 +62,7 @@ function getScores(type) {
 	});
 }
 
-$(".load-more-user-scores").click(function() {
+$(".load-more-user-scores").click(function () {
 	if ($(this).attr("disabled"))
 		return;
 	getScores($(this).data("rel"));
@@ -70,30 +70,30 @@ $(".load-more-user-scores").click(function() {
 
 function timeSince(date) {
 
-    var seconds = Math.floor((new Date() - date) / 1000);
+	var seconds = Math.floor((new Date() - date) / 1000);
 
-    var interval = Math.floor(seconds / 31536000);
+	var interval = Math.floor(seconds / 31536000);
 
-    if (interval > 1) {
-        return interval + " years";
-    }
-    interval = Math.floor(seconds / 2592000);
-    if (interval > 1) {
-        return interval + " months";
-    }
-    interval = Math.floor(seconds / 86400);
-    if (interval > 1) {
-        return interval + " days";
-    }
-    interval = Math.floor(seconds / 3600);
-    if (interval > 1) {
-        return interval + " hours";
-    }
-    interval = Math.floor(seconds / 60);
-    if (interval > 1) {
-        return interval + " minutes";
-    }
-    return Math.floor(seconds) + " seconds";
+	if (interval > 1) {
+		return interval + " years";
+	}
+	interval = Math.floor(seconds / 2592000);
+	if (interval > 1) {
+		return interval + " months";
+	}
+	interval = Math.floor(seconds / 86400);
+	if (interval > 1) {
+		return interval + " days";
+	}
+	interval = Math.floor(seconds / 3600);
+	if (interval > 1) {
+		return interval + " hours";
+	}
+	interval = Math.floor(seconds / 60);
+	if (interval > 1) {
+		return interval + " minutes";
+	}
+	return Math.floor(seconds) + " seconds";
 }
 
 function getScoreMods(m) {
@@ -238,14 +238,14 @@ function addCommas(nStr) {
 }
 
 function getRank(gameMode, mods, acc, c300, c100, c50, cmiss) {
-	var total = c300+c100+c50+cmiss;
+	var total = c300 + c100 + c50 + cmiss;
 
 	var hdfl = (mods & (Hidden | Flashlight | FadeIn)) > 0;
 
 	var ss = hdfl ? "sshd" : "ss";
 	var s = hdfl ? "shd" : "s";
 
-	switch(gameMode) {
+	switch (gameMode) {
 		case 0:
 		case 1:
 			var ratio300 = c300 / total;
