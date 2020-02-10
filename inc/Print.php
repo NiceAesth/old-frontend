@@ -1065,9 +1065,9 @@ class P {
 		$cv = current($GLOBALS['db']->fetch("SELECT value_string FROM bancho_settings WHERE name = 'osu_versions'"));
 		$cmd5 = current($GLOBALS['db']->fetch("SELECT value_string FROM bancho_settings WHERE name = 'osu_md5s'"));
 		$icons = $GLOBALS["db"]->fetchAll("SELECT * FROM main_menu_icons");
-		$hasDefault = current($GLOBALS["db"]->fetch("SELECT COUNT(*) FROM main_menu_icons WHERE is_default = 1 LIMIT 1")) > 0;
+		$hasDefault = current($GLOBALS["db"]->fetch("SELECT COUNT(*) FROM main_menu_icons WHERE is_current = 1 LIMIT 1")) > 0;
 		$hasIcon = current($GLOBALS["db"]->fetch("SELECT COUNT(*) FROM main_menu_icons WHERE is_current = 1 LIMIT 1")) > 0;
-		$isDefault = $GLOBALS["db"]->fetch("SELECT is_default FROM main_menu_icons WHERE is_current = 1 LIMIT 1")["is_default"] == 1;
+		$isDefault = $GLOBALS["db"]->fetch("SELECT is_current FROM main_menu_icons WHERE is_current = 1 LIMIT 1")["is_current"] == 1;
 		// Default select stuff
 		$selected[0] = [1 => '', 2 => ''];
 		$selected[1] = [1 => '', 2 => ''];
@@ -1117,7 +1117,6 @@ class P {
 						<td><a href="https://i.sirohi.xyz/' . $icon["file_id"] . '.png" target="_blank">' . $icon["name"] . '</a> - <a href="' . $icon["url"] . '" target="_blank">' . $icon["url"] . '</td>
 						<td style="text-align: right">
 							<a ' . ($icon["is_current"] ? "disabled" : "") . ' title="Set as main menu icon" class="btn btn-success btn-xs" href="submit.php?action=setMainMenuIcon&id=' . $icon["id"] . '&csrf='.csrfToken(). '"><i class="fa fa-check"></i></a>
-							<a ' . ($icon["is_default"] ? "disabled" : "") . ' title="Set as default main menu icon" class="btn btn-info btn-xs" href="submit.php?action=setDefaultMainMenuIcon&id=' . $icon["id"] . '&csrf='.csrfToken(). '"><i class="fa fa-asterisk"></i></a>
 							<a title="Send to all online \'developers\' (to test the image)" class="btn btn-warning btn-xs" href="submit.php?action=testMainMenuIcon&id=' . $icon["id"] . '&csrf='.csrfToken(). '"><i class="fa fa-bug"></i></a>
 							<a title="Delete main menu icon" class="btn btn-danger btn-xs" href="submit.php?action=deleteMainMenuIcon&id=' . $icon["id"] . '&csrf='.csrfToken(). '"><i class="fa fa-trash"></i></a>
 						</td>
