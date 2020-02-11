@@ -1268,19 +1268,19 @@ class P
 	*/
 	public static function AdminLog()
 	{
-		// TODO: Ask stampa piede COME SI DICHIARANO LE COSTANTY IN PIACCAPPI??
-		$pageInterval = 50;
+        $pageInterval = 200;
 
-		// Get data
-		$first = false;
-		if (isset($_GET["from"])) {
-			$from = $_GET["from"];
-			$first = current($GLOBALS["db"]->fetch("SELECT id FROM rap_logs ORDER BY datetime DESC LIMIT 1")) == $from;
-		} else {
-			$from = current($GLOBALS["db"]->fetch("SELECT id FROM rap_logs ORDER BY datetime DESC LIMIT 1"));
-			$first = true;
-		}
-		$to = $from - $pageInterval;
+        // Get data
+        $first = false;
+        if (isset($_GET["from"])) {
+            $from = $_GET["from"];
+            $first = current($GLOBALS["db"]->fetch("SELECT id FROM rap_logs ORDER BY datetime DESC LIMIT 1")) == $from;
+        } else {
+            $from = current($GLOBALS["db"]->fetch("SELECT id FROM rap_logs ORDER BY datetime DESC LIMIT 1"));
+            $first = true;
+        }
+        $to = $from - $pageInterval;
+		// TODO: Ask stampa piede COME SI DICHIARANO LE COSTANTY IN PIACCAPPI??
 		$logs = $GLOBALS['db']->fetchAll('SELECT rap_logs.*, users.username FROM rap_logs LEFT JOIN users ON rap_logs.userid = users.id WHERE rap_logs.id <= ? AND rap_logs.id > ? ORDER BY rap_logs.datetime DESC', [$from, $to]);
 		// Print sidebar and template stuff
         printAdminSidebar();
@@ -1307,86 +1307,51 @@ class P
             <h4 class="c-grey-900 mT-10 mB-30"><i class="fa fa-calendar"></i> Admin Log</h4>
             <div class="row"><div class="col-md-12">
                 <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                    <h4 class="c-grey-900 mB-20">Bootstrap Data Table</h4>
                     <div id="dataTable_wrapper" class="dataTables_wrapper">
-                    <div class="dataTables_length" id="dataTable_length">
-                        <label>Show 
-                            <select name="dataTable_length" aria-controls="dataTable" class="">
-                                <option value="10">10</option><option value="25">25</option>
-                                <option value="50">50</option><option value="100">100</option>
-                            </select> entries
-                        </label>
-                    </div>
-                    <div id="dataTable_filter" class="dataTables_filter">
-                        <label>Search:<input type="search" class="" placeholder="" aria-controls="dataTable"></label>
-                    </div>
-                        <table id="dataTable" class="table table-striped table-bordered dataTable" cellspacing="0" width="100%" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
+                        <table id="logDataTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
                             <thead>
                                 <tr role="row">
-                                    <th class="sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 100px;">Name</th>
-                                    <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 149px;">Position</th>
-                                    <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: 75px;">Office</th>
-                                    <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending" style="width: 26px;">Age</th>
-                                    <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 73px;">Start date</th>
-                                    <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 68px;">Salary</th>
+                                    <th>When</th>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Action</th>
+                                    <th>Through</th>
                                 </tr>
                             </thead>
                             <tfoot>
                                 <tr>
-                                    <th rowspan="1" colspan="1">Name</th>
-                                    <th rowspan="1" colspan="1">Position</th>
-                                    <th rowspan="1" colspan="1">Office</th>
-                                    <th rowspan="1" colspan="1">Age</th><th rowspan="1" colspan="1">Start date</th>
-                                    <th rowspan="1" colspan="1">Salary</th>
+                                    <th>When</th>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Action</th>
+                                    <th>Through</th>
                                 </tr>
                             </tfoot>
-                            <tbody>
-                                <tr role="row" class="odd">
-                                    <td class="sorting_1">Airi Satou</td>
-                                    <td>Accountant</td>
-                                    <td>Tokyo</td><td>33</td>
-                                    <td>2008/11/28</td>
-                                    <td>$162,700</td>
-                                </tr>
+                            <tbody>';
+        foreach ($logs as $entry) {
+            echo '
+                                    <tr>
+                                        <td>' . date("Y/m/d", $entry["datetime"]) . '</td>
+                                        <td>'.$entry["userid"].'</td>
+                                        <td>
+                                            <a href="" class="no-after peers fxw-nw ai-c lh-1">
+                                                <div class="peer mR-10"><img class="w-2r bdrs-50p" src="https://a.sirohi.xyz/' . $entry["userid"] . '" alt="" title="" style=""></div>
+                                                <div class="peer"><span class="fsz-sm c-grey-900">' . $entry["username"] . '</span></div>
+                                            </a>        
+                                        </td>
+                                        <td>' . $entry["text"] . '</td>
+                                        <td>'.$entry["through"].'</td>
+                                    </tr>
+                                    ';
+        }
+		echo'
                             </tbody>
                         </table>
-                        <div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">Showing 1 to 25 of 57 entries</div>
-                        <div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
-                            <a class="paginate_button previous disabled" aria-controls="dataTable" data-dt-idx="0" tabindex="0" id="dataTable_previous">Previous</a>
-                            <span>
-                                <a class="paginate_button current" aria-controls="dataTable" data-dt-idx="1" tabindex="0">1</a>
-                                <a class="paginate_button " aria-controls="dataTable" data-dt-idx="2" tabindex="0">2</a>
-                                <a class="paginate_button " aria-controls="dataTable" data-dt-idx="3" tabindex="0">3</a>
-                            </span>
-                            <a class="paginate_button next" aria-controls="dataTable" data-dt-idx="4" tabindex="0" id="dataTable_next">Next</a>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
         </div>';
-		// Main page content here
-		echo '<div class="bubbles-container">';
-		if (!$logs) {
-			printBubble(1000, "You", "have reached the end of the life the universe and everything. Now go fuck a donkey.", time() - (43 * 60), "The Hitchhiker's Guide to the Galaxy");
-		} else {
-			$lastDay = -1;
-			foreach ($logs as $entry) {
-				$currentDay = date("z", $entry["datetime"]);
-				if ($lastDay != $currentDay)
-					echo '<div class="line"><div class="line-text"><span class="label label-primary">' . date("d/m/Y", $entry["datetime"]) . '</span></div></div>';
-				printBubble($entry["userid"], $entry["username"], $entry["text"], $entry["datetime"], $entry["through"]);
-				$lastDay = $currentDay;
-			}
-		}
-		echo '</div>';
-		echo '<br><br><p align="center">';
-		if (!$first)
-			echo '<a href="index.php?p=116&from=' . ($from + $pageInterval) . '">< Prev page</a>';
-		if (!$first && $logs)
-			echo ' | ';
-		if ($logs)
-			echo '<a href="index.php?p=116&from=' . $to . '">Next page</a> ></p>';
 		// Template end
 		echo '</div></div></div></div></div></main>';
 	}
