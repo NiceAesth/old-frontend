@@ -434,7 +434,7 @@ function printNavbar()
     foreach ($logs as $entry) {
         echo '
                                         <li>
-                                            <a href="' . URL::Server() . '/u/' . getUserID($entry['userid']) . '" class="peers fxw-nw td-n p-20 bdB c-grey-800 cH-blue bgcH-grey-100">
+                                            <a href="' . URL::Server() . '/u/' . $entry['userid'] . '" class="peers fxw-nw td-n p-20 bdB c-grey-800 cH-blue bgcH-grey-100">
                                                 <div class="peer mR-15"><img class="w-3r bdrs-50p" src="' . URL::Avatar() . '/' . $entry['userid'] . '" alt=""></div>
                                                 <div class="peer peer-greed"><span><span class="fw-500"></span>'.$entry['username'].' <span class="c-grey-600">'.$entry['text'].'</span></span>
                                                     </span>
