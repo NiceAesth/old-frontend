@@ -410,7 +410,14 @@ function printPage($p)
 */
 function printNavbar()
 {
-	global $discordConfig;
+    $pageInterval = 3;
+
+    // Get data
+    $from = current($GLOBALS["db"]->fetch("SELECT id FROM rap_logs ORDER BY datetime DESC LIMIT 1"));
+    $to = $from - $pageInterval;
+    // TODO: Ask stampa piede COME SI DICHIARANO LE COSTANTY IN PIACCAPPI??
+    $logs = $GLOBALS['db']->fetchAll('SELECT rap_logs.*, users.username FROM rap_logs LEFT JOIN users ON rap_logs.userid = users.id WHERE rap_logs.id <= ? AND rap_logs.id > ? ORDER BY rap_logs.datetime DESC', [$from, $to]);
+	//global $discordConfig;
 	echo '<div class="header navbar">
 			<div class="header-container">
 				<ul class="nav-left">
@@ -421,21 +428,25 @@ function printNavbar()
 				<ul class="nav-right">
 					<li class="notifications dropdown"> <a href="" class="dropdown-toggle no-after" data-toggle="dropdown"><i class="ti-bell"></i></a>
 						<ul class="dropdown-menu">
-							<li class="pX-20 pY-15 bdB"><i class="ti-bell pR-10"></i> <span class="fsz-sm fw-600 c-grey-900">Notifications</span></li>
+							<li class="pX-20 pY-15 bdB"><i class="ti-bell pR-10"></i> <span class="fsz-sm fw-600 c-grey-900">Logs</span></li>
 							<li>
-								<ul class="ovY-a pos-r scrollable lis-n p-0 m-0 fsz-sm">
-									<li>
-										<a href="" class="peers fxw-nw td-n p-20 bdB c-grey-800 cH-blue bgcH-grey-100">
-											<div class="peer mR-15"><img class="w-3r bdrs-50p" src="https://randomuser.me/api/portraits/men/1.jpg" alt=""></div>
-											<div class="peer peer-greed"><span><span class="fw-500">John Doe</span> <span class="c-grey-600">liked your <span class="text-dark">post</span></span>
-												</span>
-												<p class="m-0"><small class="fsz-xs">5 mins ago</small></p>
-											</div>
-										</a>
-									</li>
+								<ul class="ovY-a pos-r scrollable lis-n p-0 m-0 fsz-sm">';
+    foreach ($logs as $entry) {
+        echo '
+                                        <li>
+                                            <a href="" class="peers fxw-nw td-n p-20 bdB c-grey-800 cH-blue bgcH-grey-100">
+                                                <div class="peer mR-15"><img class="w-3r bdrs-50p" src="' . URL::Avatar() . '/' . $entry['userid'] . '" alt=""></div>
+                                                <div class="peer peer-greed"><span><span class="fw-500"></span>'.$entry['username'].' <span class="c-grey-600">'.$entry['text'].'</span></span>
+                                                    </span>
+                                                    <p class="m-0"><small class="fsz-xs">5 mins ago</small></p>
+                                                </div>
+                                            </a>
+                                        </li>';
+    }
+	echo '
 								</ul>
 							</li>
-							<li class="pX-20 pY-15 ta-c bdT"><span><a href="" class="c-grey-600 cH-blue fsz-sm td-n">View All Notifications <i class="ti-angle-right fsz-xs mL-10"></i></a></span></li>
+							<li class="pX-20 pY-15 ta-c bdT"><span><a href="index.php?p=116" class="c-grey-600 cH-blue fsz-sm td-n">View All Logs <i class="ti-angle-right fsz-xs mL-10"></i></a></span></li>
 						</ul>
 					</li>
 					<li class="dropdown">

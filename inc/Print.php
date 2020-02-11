@@ -1331,7 +1331,7 @@ class P
         foreach ($logs as $entry) {
             echo '
                                     <tr>
-                                        <td>' . date("Y/m/d", $entry["datetime"]) . '</td>
+                                        <td data-order="'.$entry["datetime"].'">' . date("d/m/Y", $entry["datetime"]) . '</td>
                                         <td>'.$entry["userid"].'</td>
                                         <td>
                                             <a href="" class="no-after peers fxw-nw ai-c lh-1">
