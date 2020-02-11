@@ -90,7 +90,9 @@ class P
 
 		foreach ($recentPlays as $play) {
 			// set $bn to song name by default. If empty or null, replace with the beatmap md5.
-			$bn = current($GLOBALS['db']->fetch("SELECT beatmaps.song_name FROM beatmaps WHERE beatmaps.beatmap_md5 = '{$play['beatmap_md5']}' LIMIT 1"));
+			$beatmap = current($GLOBALS['db']->fetchAll("SELECT beatmaps.song_name, beatmaps.beatmap_id FROM beatmaps WHERE beatmaps.beatmap_md5 = '{$play['beatmap_md5']}' LIMIT 1"));
+			$bn = $beatmap['song_name'];
+		    $bid = $beatmap['beatmap_id'];
 			// Check if this beatmap has a name cached, if yes show it, otherwise show its md5
 			if (!$bn) {
 				$bn = $play['beatmap_md5'];
@@ -100,7 +102,7 @@ class P
 			// Print row
 			echo '<tr class="success">';
 			echo '<td class="fw-600"><b><a href="' . URL::Server() . '/u/' . getUserID($play['username']) . '">' . $play['username'] . '</a></b></p></td>';
-			echo '<td>' . $bn . ' <b>' . getScoreMods($play['mods']) . '</b></td>';
+			echo '<td><a href="' . URL::Server() . '/b/' . $bid . '">' . $bn . '</a> <b>' . getScoreMods($play['mods']) . '</b></td>';
 			echo '<td>' . $pm . '</td>';
 			echo '<td>' . timeDifference(time(), $play['time']) . '</td>';
 			echo '<td><span class="text-success">' . number_format($play['score']) . '</span></td>';
@@ -477,9 +479,15 @@ class P
 			*/
 			}
 			// Print edit user stuff
-			echo '<div id="wrapper">';
-			printAdminSidebar();
-			echo '<div id="page-content-wrapper">';
+            printAdminSidebar();
+            echo '<div class="page-container">';
+            printNavbar();
+            echo '<main class="main-content bgc-grey-100">
+		<div id="mainContent">
+			<div class="row gap-20 masonry pos-r">
+				<div class="masonry-sizer col-md-6"></div>
+				<div class="masonry-item w-100">
+					<div class="row gap-20">';
 			// Maintenance check
 			self::MaintenanceStuff();
 			// Print Success if set
@@ -741,7 +749,7 @@ class P
 					</div>';
 
 			echo '</div>
-				</div>';
+				</div></div></div></div></div></main>';
 		} catch (Exception $e) {
 			// Redirect to exception page
 			redirect('index.php?p=102&e=' . $e->getMessage());
@@ -767,9 +775,15 @@ class P
 				throw new Exception("You don't have enough permission to edit this user.");
 			}
 			// Print edit user stuff
-			echo '<div id="wrapper">';
-			printAdminSidebar();
-			echo '<div id="page-content-wrapper">';
+            printAdminSidebar();
+            echo '<div class="page-container">';
+            printNavbar();
+            echo '<main class="main-content bgc-grey-100">
+		<div id="mainContent">
+			<div class="row gap-20 masonry pos-r">
+				<div class="masonry-sizer col-md-6"></div>
+				<div class="masonry-item w-100">
+					<div class="row gap-20">';
 			// Maintenance check
 			self::MaintenanceStuff();
 			// Print Success if set
@@ -800,7 +814,7 @@ class P
 			echo '</tbody></form>';
 			echo '</table>';
 			echo '<div class="text-center"><button type="submit" form="system-settings-form" class="btn btn-primary">Change identity</button></div>';
-			echo '</div>';
+			echo '</div></div></div></div></div></main>';
 		} catch (Exception $e) {
 			// Redirect to exception page
 			redirect('index.php?p=102&e=' . $e->getMessage());
@@ -1242,10 +1256,9 @@ class P
 		<td><textarea type="text" name="ln" class="form-control" maxlength="512" style="overflow:auto;resize:vertical;height:100px">' . $ln . '</textarea></td>
 		</tr>';
 		echo '<tr class="success">
-		<td colspan=2><p align="center"><b>Settings are automatically reloaded on Bancho when you press "Save settings".</b> There\'s no need to do <i>!system reload</i> manually anymore.</p></td>
+		<td colspan=2><p align="center"><b>Settings are automatically reloaded on Bancho when you press "Save settings".</b> There\'s no need to do <i>!system reload</i> manually anymore.<br><div class="text-center"><button type="submit" class="btn btn-primary">Save settings</button></div></form></p></td>
 		</tr>';
-		echo '</tbody><table>
-		<div class="text-center"><button type="submit" class="btn btn-primary">Save settings</button></div></form>';
+		echo '</tbody><table>';
 		echo '</div></div></div></div></div></main>';
 	}
 
@@ -1270,9 +1283,15 @@ class P
 		$to = $from - $pageInterval;
 		$logs = $GLOBALS['db']->fetchAll('SELECT rap_logs.*, users.username FROM rap_logs LEFT JOIN users ON rap_logs.userid = users.id WHERE rap_logs.id <= ? AND rap_logs.id > ? ORDER BY rap_logs.datetime DESC', [$from, $to]);
 		// Print sidebar and template stuff
-		echo '<div id="wrapper">';
-		printAdminSidebar();
-		echo '<div id="page-content-wrapper" style="text-align: left;">';
+        printAdminSidebar();
+        echo '<div class="page-container">';
+        printNavbar();
+        echo '<main class="main-content bgc-grey-100">
+		<div id="mainContent">
+			<div class="row gap-20 masonry pos-r">
+				<div class="masonry-sizer col-md-6"></div>
+				<div class="masonry-item w-100">
+					<div class="row gap-20">';
 		// Maintenance check
 		self::MaintenanceStuff();
 		// Print Success if set
@@ -1284,11 +1303,72 @@ class P
 			self::ExceptionMessageStaccah($_GET['e']);
 		}
 		// Header
-		echo '<span class="centered"><h2><i class="fa fa-calendar"></i>	Admin Log</h2></span>';
+        echo '<div class="container-fluid">
+            <h4 class="c-grey-900 mT-10 mB-30"><i class="fa fa-calendar"></i> Admin Log</h4>
+            <div class="row"><div class="col-md-12">
+                <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                    <h4 class="c-grey-900 mB-20">Bootstrap Data Table</h4>
+                    <div id="dataTable_wrapper" class="dataTables_wrapper">
+                    <div class="dataTables_length" id="dataTable_length">
+                        <label>Show 
+                            <select name="dataTable_length" aria-controls="dataTable" class="">
+                                <option value="10">10</option><option value="25">25</option>
+                                <option value="50">50</option><option value="100">100</option>
+                            </select> entries
+                        </label>
+                    </div>
+                    <div id="dataTable_filter" class="dataTables_filter">
+                        <label>Search:<input type="search" class="" placeholder="" aria-controls="dataTable"></label>
+                    </div>
+                        <table id="dataTable" class="table table-striped table-bordered dataTable" cellspacing="0" width="100%" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
+                            <thead>
+                                <tr role="row">
+                                    <th class="sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 100px;">Name</th>
+                                    <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 149px;">Position</th>
+                                    <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: 75px;">Office</th>
+                                    <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending" style="width: 26px;">Age</th>
+                                    <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 73px;">Start date</th>
+                                    <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 68px;">Salary</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th rowspan="1" colspan="1">Name</th>
+                                    <th rowspan="1" colspan="1">Position</th>
+                                    <th rowspan="1" colspan="1">Office</th>
+                                    <th rowspan="1" colspan="1">Age</th><th rowspan="1" colspan="1">Start date</th>
+                                    <th rowspan="1" colspan="1">Salary</th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                <tr role="row" class="odd">
+                                    <td class="sorting_1">Airi Satou</td>
+                                    <td>Accountant</td>
+                                    <td>Tokyo</td><td>33</td>
+                                    <td>2008/11/28</td>
+                                    <td>$162,700</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">Showing 1 to 25 of 57 entries</div>
+                        <div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
+                            <a class="paginate_button previous disabled" aria-controls="dataTable" data-dt-idx="0" tabindex="0" id="dataTable_previous">Previous</a>
+                            <span>
+                                <a class="paginate_button current" aria-controls="dataTable" data-dt-idx="1" tabindex="0">1</a>
+                                <a class="paginate_button " aria-controls="dataTable" data-dt-idx="2" tabindex="0">2</a>
+                                <a class="paginate_button " aria-controls="dataTable" data-dt-idx="3" tabindex="0">3</a>
+                            </span>
+                            <a class="paginate_button next" aria-controls="dataTable" data-dt-idx="4" tabindex="0" id="dataTable_next">Next</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>';
 		// Main page content here
 		echo '<div class="bubbles-container">';
 		if (!$logs) {
-			printBubble(999, "You", "have reached the end of the life the universe and everything. Now go fuck a donkey.", time() - (43 * 60), "The Hitchhiker's Guide to the Galaxy");
+			printBubble(1000, "You", "have reached the end of the life the universe and everything. Now go fuck a donkey.", time() - (43 * 60), "The Hitchhiker's Guide to the Galaxy");
 		} else {
 			$lastDay = -1;
 			foreach ($logs as $entry) {
@@ -1308,7 +1388,7 @@ class P
 		if ($logs)
 			echo '<a href="index.php?p=116&from=' . $to . '">Next page</a> ></p>';
 		// Template end
-		echo '</div>';
+		echo '</div></div></div></div></div></main>';
 	}
 
 	/*
@@ -2537,9 +2617,15 @@ WHERE users.$kind = ? LIMIT 1", [$u]);
 				throw new Exception("That privilege group doesn't exists");
 			}
 			// Print edit user stuff
-			echo '<div id="wrapper">';
-			printAdminSidebar();
-			echo '<div id="page-content-wrapper">';
+            printAdminSidebar();
+            echo '<div class="page-container">';
+            printNavbar();
+            echo '<main class="main-content bgc-grey-100">
+		<div id="mainContent">
+			<div class="row gap-20 masonry pos-r">
+				<div class="masonry-sizer col-md-6"></div>
+				<div class="masonry-item w-100">
+					<div class="row gap-20">';
 			// Maintenance check
 			self::MaintenanceStuff();
 			echo '<p align="center"><font size=5><i class="fa fa-layer-group"></i>	Privilege Group</font></p>';
@@ -2613,7 +2699,7 @@ WHERE users.$kind = ? LIMIT 1", [$u]);
 			echo '</tbody></form>';
 			echo '</table>';
 			echo '<div class="text-center"><button type="submit" form="edit-badge-form" class="btn btn-primary">Save changes</button></div>';
-			echo '</div>';
+			echo '</div></div></div></div></div></main>';
 		} catch (Exception $e) {
 			// Redirect to exception page
 			redirect('index.php?p=119&e=' . $e->getMessage());
