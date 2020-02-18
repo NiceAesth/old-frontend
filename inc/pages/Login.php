@@ -90,7 +90,7 @@ class Login
 			// Old frontend shall be seen by no human on earth. Except for
 			// staff members. Those aren't human.
 			if (!hasPrivilege(Privileges::AdminAccessRAP, $us["id"])) {
-				redirect("https://new.sirohi.xyz");
+				redirect("https://sirohi.xyz");
 			}
 
 			// Get username with right case
