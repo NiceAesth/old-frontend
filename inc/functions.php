@@ -1518,7 +1518,7 @@ function printBubble($userID, $username, $message, $time, $through)
 	</div>';
 }
 
-function rapLog($message, $userID = -1, $through = "RAP")
+function rapLog($message, $userID = -1, $through = "SAP")
 {
 	if ($userID == -1)
 		$userID = $_SESSION["userid"];
