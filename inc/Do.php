@@ -1286,18 +1286,6 @@ class D {
 					break;
 				}
 
-				$bm = $GLOBALS["db"]->fetch("SELECT beatmapset_id, song_name FROM beatmaps WHERE beatmapset_id = ? LIMIT 1", [$bsid]);
-				$msg = "[https://osu.ppy.sh/s/" . $bsid . " " . $bm["song_name"] . "] is now ranked!";
-				$to = "#announce";
-				$requesturl = $URL["bancho"] . "/api/v1/fokabotMessage?k=" . urlencode($ScoresConfig["api_key"]) . "&to=" . urlencode($to) . "&msg=" . urlencode($msg);
-				$resp = getJsonCurl($requesturl);
-				echo '<script>';
-				echo 'console.log('. json_encode( $resp["message"] ) .')';
-				echo '</script>';
-				if ($resp["message"] != "ok") {
-					rapLog("failed to send FokaBot message :( err: " . $resp["message"]);
-				}
-
 				// RAP Log
 				if ($logToRap)
 					rapLog(sprintf("has %s beatmap set %s", $rap, $bsid), $_SESSION["userid"]);
@@ -1335,7 +1323,7 @@ class D {
 			}
 
 			// Done
-			redirect("index.php?p=117&s=".$result);
+			redirect("index.php?p=117&s=".$resp);
 		} catch (Exception $e) {
 			redirect('index.php?p=117&e='.$e->getMessage());
 		}
