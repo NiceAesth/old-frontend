@@ -1291,7 +1291,9 @@ class D {
 				$to = "#announce";
 				$requesturl = $URL["bancho"] . "/api/v1/fokabotMessage?k=" . urlencode($ScoresConfig["api_key"]) . "&to=" . urlencode($to) . "&msg=" . urlencode($msg);
 				$resp = getJsonCurl($requesturl);
-
+				echo '<script>';
+				echo 'console.log('. json_encode( $resp["message"] ) .')';
+				echo '</script>';
 				if ($resp["message"] != "ok") {
 					rapLog("failed to send FokaBot message :( err: " . $resp["message"]);
 				}
