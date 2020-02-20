@@ -1323,7 +1323,7 @@ class D {
 			}
 
 			// Done
-			redirect("index.php?p=117&s=".$resp);
+			redirect("index.php?p=117&s=".$resp["status"]);
 		} catch (Exception $e) {
 			redirect('index.php?p=117&e='.$e->getMessage());
 		}
