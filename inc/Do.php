@@ -1292,7 +1292,7 @@ class D {
 				$resp = getJsonCurl($requesturl);
 
 				if ($resp["message"] != "ok") {
-					rapLog("failed to send FokaBot message :( err: " . print_r($resp["message"], true));
+					rapLog("failed to send FokaBot message :( err: " . $resp["message"]);
 				}
 
 				// RAP Log
