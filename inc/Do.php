@@ -1217,6 +1217,7 @@ class D {
 
 			$bsid = -1;
 			$result = "";
+			$rap = "";
 			$updateCache = false;
 
 			// Do stuff for each beatmap
