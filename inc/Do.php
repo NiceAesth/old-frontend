@@ -1329,7 +1329,7 @@ class D {
 			}
 
 			// Done
-			redirect("index.php?p=117&s=".print_r($creator)."|".gettype($creator)."|".$bmReqURL);
+			redirect("index.php?p=117&s=".$creator."|".gettype($creator)."|".$bmReqURL);
 		} catch (Exception $e) {
 			redirect('index.php?p=117&e='.$e->getMessage());
 		}
