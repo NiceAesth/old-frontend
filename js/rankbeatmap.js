@@ -36,7 +36,7 @@ $("document").ready(function() {
 	var href = $(location).attr("href")
 	var reload = href
 	if (href.indexOf("force=1") === -1) {
-		reload = href.substring(0, href.indexOf("#")) + "&force=1"
+		reload = href + "&force=1"
 	}
 	$.ajax("/letsapi/v1/cacheBeatmap", {
 		method: "POST",

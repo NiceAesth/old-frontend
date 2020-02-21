@@ -1217,6 +1217,7 @@ class D {
 
 			$bsid = -1;
 			$result = "";
+			$rap = "";
 			$updateCache = false;
 
 			// Do stuff for each beatmap
@@ -1240,7 +1241,7 @@ class D {
 
 						// Restore old scores
 						$GLOBALS["db"]->execute("UPDATE scores s JOIN (SELECT userid, MAX(score) maxscore FROM scores JOIN beatmaps ON scores.beatmap_md5 = beatmaps.beatmap_md5 WHERE beatmaps.beatmap_md5 = (SELECT beatmap_md5 FROM beatmaps WHERE beatmap_id = ? LIMIT 1) GROUP BY userid) s2 ON s.score = s2.maxscore AND s.userid = s2.userid SET completed = 3", [$beatmapID]);
-						$result .= "$beatmapID has been ranked and its scores have been restored. | ";
+						$result .= "$beatmapID has been ranked and its scores have been restored. ";
 						$rap .= "ranked";
 					break;
 						
@@ -1250,7 +1251,7 @@ class D {
 
 						// Restore old scores
 						$GLOBALS["db"]->execute("UPDATE scores s JOIN (SELECT userid, MAX(score) maxscore FROM scores JOIN beatmaps ON scores.beatmap_md5 = beatmaps.beatmap_md5 WHERE beatmaps.beatmap_md5 = (SELECT beatmap_md5 FROM beatmaps WHERE beatmap_id = ? LIMIT 1) GROUP BY userid) s2 ON s.score = s2.maxscore AND s.userid = s2.userid SET completed = 3", [$beatmapID]);
-						$result .= "$beatmapID has been loved and its scores have been restored. | ";
+						$result .= "$beatmapID has been loved and its scores have been restored. ";
 						$rap .= "loved";
 					break;
 
@@ -1260,7 +1261,7 @@ class D {
 
 						// Restore old scores
 						$GLOBALS["db"]->execute("UPDATE scores s JOIN (SELECT userid, MAX(score) maxscore FROM scores JOIN beatmaps ON scores.beatmap_md5 = beatmaps.beatmap_md5 WHERE beatmaps.beatmap_md5 = (SELECT beatmap_md5 FROM beatmaps WHERE beatmap_id = ? LIMIT 1) GROUP BY userid) s2 ON s.score = s2.maxscore AND s.userid = s2.userid SET completed = 2", [$beatmapID]);
-						$result .= "$beatmapID has been ranked and its scores have been mark as old scores. | ";
+						$result .= "$beatmapID has been unranked and its scores have been mark as old scores. ";
 						$rap .= "unranked";
 					break;
 
@@ -1268,14 +1269,14 @@ class D {
 					case "update":
 						$updateCache = true;
 						$GLOBALS["db"]->execute("UPDATE beatmaps SET ranked = 0, ranked_status_freezed = 0 WHERE beatmap_id = ? LIMIT 1", [$beatmapID]);
-						$result .= "$beatmapID's ranked status is the same from official osu!. | ";
+						$result .= "$beatmapID's ranked status is the same from official osu!. ";
 						$rap .= "updated status from bancho for";
 					break;
 
 					// No changes
 					case "no":
 						$logToRap = false;
-						$result .= "$beatmapID's ranked status has not been edited!. | ";
+						$result .= "$beatmapID's ranked status has not been edited!. ";
 						$rap .= "nothing to do with";
 					break;
 
