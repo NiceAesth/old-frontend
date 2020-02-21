@@ -1309,8 +1309,8 @@ class D {
 				$requesturl = $URL["bancho"] . "/api/v1/fokabotMessage?k=" . urlencode($ScoresConfig["api_key"]) . "&to=" . urlencode($to) . "&msg=" . urlencode($msg);
 				$resp = getJsonCurl($requesturl);
 				$bmReqURL = $URL["cheesegull"] . "/api/s/" . $bm["beatmapset_id"];
-				$bmResp = getJsonCurl($bmReqURL);
-				$execResult = $GLOBALS["db"]->execute("INSERT INTO newly_ranked (beatmap_id, beatmapset_id, beatmap_md5, song_name, ranked_time, ranked_by, creator) VALUES (?, ?, ?, ?, ?, ?, ?)", [$beatmapID, $bm["beatmapset_id"], $bm["beatmap_md5"], $bm["song_name"], time(), $_SESSION["userid"], $bmResp["Creator"]]);
+				$creator = getJsonCurl($bmReqURL)["Creator"];
+				$execResult = $GLOBALS["db"]->execute("INSERT INTO newly_ranked (beatmap_id, beatmapset_id, beatmap_md5, song_name, ranked_time, ranked_by, creator) VALUES (?, ?, ?, ?, ?, ?, ?)", [$beatmapID, $bm["beatmapset_id"], $bm["beatmap_md5"], $bm["song_name"], time(), $_SESSION["userid"], $creator]);
 			} else if ($status == "love") {
 				$bm = $GLOBALS["db"]->fetch("SELECT beatmapset_id, song_name FROM beatmaps WHERE beatmapset_id = ? LIMIT 1", [$bsid]);
 				$msg = "[https://osu.ppy.sh/s/" . $bsid . " " . $bm["song_name"] . "] is now loved!";
@@ -1318,8 +1318,8 @@ class D {
 				$requesturl = $URL["bancho"] . "/api/v1/fokabotMessage?k=" . urlencode($ScoresConfig["api_key"]) . "&to=" . urlencode($to) . "&msg=" . urlencode($msg);
 				$resp = getJsonCurl($requesturl);
 				$bmReqURL = $URL["cheesegull"] . "/api/s/" . $bm["beatmapset_id"];
-				$bmResp = getJsonCurl($bmReqURL);
-				$GLOBALS["db"]->execute("INSERT INTO newly_ranked (beatmap_id, beatmapset_id, beatmap_md5, song_name, ranked_time, ranked_by, creator) VALUES (?, ?, ?, ?, ?, ?, ?)", [$beatmapID, $bm["beatmapset_id"], $bm["beatmap_md5"], $bm["song_name"], time(), $_SESSION["userid"], $bmResp["Creator"]]);
+				$creator = getJsonCurl($bmReqURL)["Creator"];
+				$GLOBALS["db"]->execute("INSERT INTO newly_ranked (beatmap_id, beatmapset_id, beatmap_md5, song_name, ranked_time, ranked_by, creator) VALUES (?, ?, ?, ?, ?, ?, ?)", [$beatmapID, $bm["beatmapset_id"], $bm["beatmap_md5"], $bm["song_name"], time(), $_SESSION["userid"], $creator]);
 			} else if ($status == "unrank") {
 				$bm = $GLOBALS["db"]->fetch("SELECT beatmapset_id, song_name FROM beatmaps WHERE beatmapset_id = ? LIMIT 1", [$bsid]);
 				$msg = "[https://osu.ppy.sh/s/" . $bsid . " " . $bm["song_name"] . "] just got unranked!";
@@ -1329,7 +1329,7 @@ class D {
 			}
 
 			// Done
-			redirect("index.php?p=117&s=".print_r($bmResp)."|".gettype($bmresp)."|".$bmReqURL."|".print_r($execResult->errorInfo()));
+			redirect("index.php?p=117&s=".print_r($bmResp)."|".gettype($bmresp)."|".$bmReqURL);
 		} catch (Exception $e) {
 			redirect('index.php?p=117&e='.$e->getMessage());
 		}
