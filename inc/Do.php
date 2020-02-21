@@ -1310,7 +1310,7 @@ class D {
 				$resp = getJsonCurl($requesturl);
 				$bmReqURL = $URL["cheesegull"] . "/api/s?=" . urlencode($bm["beatmapset_id"]);
 				$bmResp = getJsonCurl($bmReqURL);
-				$GLOBALS["db"]->execute("INSERT INTO newly_ranked (beatmap_id, beatmapset_id, beatmap_md5, song_name, ranked_time, ranked_by, creator) VALUES (?, ?, ?, ?, ?, ?, ?)", [$beatmapID, $bm["beatmapset_id"], $bm["beatmap_md5"], $bm["song_name"], time(), $_SESSION["userid"], $bmResp["creator"]]);
+				$GLOBALS["db"]->execute("INSERT INTO newly_ranked (beatmap_id, beatmapset_id, beatmap_md5, song_name, ranked_time, ranked_by, creator) VALUES (?, ?, ?, ?, ?, ?, ?)", [$beatmapID, $bm["beatmapset_id"], $bm["beatmap_md5"], $bm["song_name"], time(), $_SESSION["userid"], $bmResp["Creator"]]);
 			} else if ($status == "love") {
 				$bm = $GLOBALS["db"]->fetch("SELECT beatmapset_id, song_name FROM beatmaps WHERE beatmapset_id = ? LIMIT 1", [$bsid]);
 				$msg = "[https://osu.ppy.sh/s/" . $bsid . " " . $bm["song_name"] . "] is now loved!";
@@ -1319,7 +1319,7 @@ class D {
 				$resp = getJsonCurl($requesturl);
 				$bmReqURL = $URL["cheesegull"] . "/api/s?=" . urlencode($bm["beatmapset_id"]);
 				$bmResp = getJsonCurl($bmReqURL);
-				$GLOBALS["db"]->execute("INSERT INTO newly_ranked (beatmap_id, beatmapset_id, beatmap_md5, song_name, ranked_time, ranked_by, creator) VALUES (?, ?, ?, ?, ?, ?, ?)", [$beatmapID, $bm["beatmapset_id"], $bm["beatmap_md5"], $bm["song_name"], time(), $_SESSION["userid"], $bmResp["creator"]]);
+				$GLOBALS["db"]->execute("INSERT INTO newly_ranked (beatmap_id, beatmapset_id, beatmap_md5, song_name, ranked_time, ranked_by, creator) VALUES (?, ?, ?, ?, ?, ?, ?)", [$beatmapID, $bm["beatmapset_id"], $bm["beatmap_md5"], $bm["song_name"], time(), $_SESSION["userid"], $bmResp["Creator"]]);
 			} else if ($status == "unrank") {
 				$bm = $GLOBALS["db"]->fetch("SELECT beatmapset_id, song_name FROM beatmaps WHERE beatmapset_id = ? LIMIT 1", [$bsid]);
 				$msg = "[https://osu.ppy.sh/s/" . $bsid . " " . $bm["song_name"] . "] just got unranked!";
