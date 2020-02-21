@@ -1329,7 +1329,7 @@ class D {
 			}
 
 			// Done
-			redirect("index.php?p=117&s=".var_dump($bmResp));
+			redirect("index.php?p=117&s=".print_r($bmResp)."|".gettype($bmresp));
 		} catch (Exception $e) {
 			redirect('index.php?p=117&e='.$e->getMessage());
 		}
