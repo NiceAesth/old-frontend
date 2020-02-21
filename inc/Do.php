@@ -1350,6 +1350,7 @@ class D
 				$to = "#announce";
 				$requesturl = $URL["bancho"] . "/api/v1/fokabotMessage?k=" . urlencode($ScoresConfig["api_key"]) . "&to=" . urlencode($to) . "&msg=" . urlencode($msg);
 				$resp = getJsonCurl($requesturl);
+				$GLOBALS['db']->execute('DELETE FROM newest_ranked WHERE beatmap_id = ?', [$beatmapID]);
 			}
 
 			// Done
