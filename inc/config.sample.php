@@ -11,7 +11,8 @@ $URL = [
 	'avatar' => 'https://a.ripple.moe',
 	'server' => 'https://ripple.moe',
 	'bancho' => 'http://c.ripple.moe',
-	'scores' => 'http://127.0.0.1:5002'
+	'scores' => 'http://127.0.0.1:5002',
+	'cheesegull' => 'https://storage.ripple.moe'
 ];
 
 // Scores/PP config
