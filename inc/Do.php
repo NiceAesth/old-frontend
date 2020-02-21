@@ -1308,7 +1308,7 @@ class D {
 				$to = "#announce";
 				$requesturl = $URL["bancho"] . "/api/v1/fokabotMessage?k=" . urlencode($ScoresConfig["api_key"]) . "&to=" . urlencode($to) . "&msg=" . urlencode($msg);
 				$resp = getJsonCurl($requesturl);
-				$bmReqURL = $URL["cheesegull"] . "/api/s?=" . urlencode($bm["beatmapset_id"]);
+				$bmReqURL = $URL["cheesegull"] . "/api/s?=" . $bm["beatmapset_id"];
 				$bmResp = getJsonCurl($bmReqURL);
 				$GLOBALS["db"]->execute("INSERT INTO newly_ranked (beatmap_id, beatmapset_id, beatmap_md5, song_name, ranked_time, ranked_by, creator) VALUES (?, ?, ?, ?, ?, ?, ?)", [$beatmapID, $bm["beatmapset_id"], $bm["beatmap_md5"], $bm["song_name"], time(), $_SESSION["userid"], $bmResp["Creator"]]);
 			} else if ($status == "love") {
@@ -1317,7 +1317,7 @@ class D {
 				$to = "#announce";
 				$requesturl = $URL["bancho"] . "/api/v1/fokabotMessage?k=" . urlencode($ScoresConfig["api_key"]) . "&to=" . urlencode($to) . "&msg=" . urlencode($msg);
 				$resp = getJsonCurl($requesturl);
-				$bmReqURL = $URL["cheesegull"] . "/api/s?=" . urlencode($bm["beatmapset_id"]);
+				$bmReqURL = $URL["cheesegull"] . "/api/s?=" . $bm["beatmapset_id"];
 				$bmResp = getJsonCurl($bmReqURL);
 				$GLOBALS["db"]->execute("INSERT INTO newly_ranked (beatmap_id, beatmapset_id, beatmap_md5, song_name, ranked_time, ranked_by, creator) VALUES (?, ?, ?, ?, ?, ?, ?)", [$beatmapID, $bm["beatmapset_id"], $bm["beatmap_md5"], $bm["song_name"], time(), $_SESSION["userid"], $bmResp["Creator"]]);
 			} else if ($status == "unrank") {
@@ -1329,7 +1329,7 @@ class D {
 			}
 
 			// Done
-			redirect("index.php?p=117&s=".$result);
+			redirect("index.php?p=117&s=".$bmReqURL);
 		} catch (Exception $e) {
 			redirect('index.php?p=117&e='.$e->getMessage());
 		}
